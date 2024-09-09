@@ -15,7 +15,7 @@ const FileItem: React.FC<{ file: File }> = ({ file }) => {
 
   return (
     <div
-      className={`flex max-w-16 cursor-pointer flex-col items-center gap-2 truncate border-2 p-2 ${isClicked ? "border-blue-700 bg-blue-500" : "border-transparent"} hover:cursor-pointer`}
+      className={`flex max-h-16 min-h-20 w-16 cursor-pointer flex-col items-center gap-2 truncate border-2 p-2 ${isClicked ? "border-blue-700 bg-blue-500" : "border-transparent"} hover:cursor-pointer`}
       onClick={handleClick}
     >
       <img src="file-icon.png" alt="file icon" />
@@ -62,7 +62,7 @@ const FilesWindow: React.FC<Props> = (props) => {
             </div>
           )}
           {files.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap justify-center gap-2">
               {files.map((file, index) => (
                 <FileItem key={index} file={file} />
               ))}
