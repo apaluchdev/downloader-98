@@ -1,6 +1,6 @@
 import "./App.css";
 import "98.css";
-import Files from "./src/components/files";
+import Files from "./components/files";
 
 function App() {
   return (
