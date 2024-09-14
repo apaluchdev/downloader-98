@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import UploadWindow from "./upload-window/upload-window";
 import FilesWindow from "./files-window/files-window";
 
@@ -26,6 +26,14 @@ const Files: React.FC<FilesProps> = () => {
     });
   };
 
+  const downloadBlob = async () => {
+    try {
+      console.log("Success, download size: ", 1024);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-8 p-6">
       {/* Main windows */}
@@ -44,8 +52,20 @@ const Files: React.FC<FilesProps> = () => {
       <div className="window fixed bottom-0 left-0 flex w-screen items-start">
         <button className="start-button m-0 p-0"></button>
       </div>
+      <button onClick={downloadBlob}>Download File</button>
     </div>
   );
 };
+
+// const AudioPlayer = () => {
+//   return (
+//     <div>
+//       <audio autoPlay>
+//         <source src={myAudio} type="audio/mpeg" />
+//         Your browser does not support the audio element.
+//       </audio>
+//     </div>
+//   );
+// };
 
 export default Files;
