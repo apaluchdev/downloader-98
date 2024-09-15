@@ -1,6 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import UploadWindow from "./upload-window/upload-window";
 import FilesWindow from "./files-window/files-window";
+import "98.css";
+import PinWindow from "./pin-window";
 
 interface FilesProps {
   // Define any props you need for the component here
@@ -9,16 +11,29 @@ interface FilesProps {
 const Files: React.FC<FilesProps> = () => {
   const [files, setFiles] = useState<File[]>([]);
 
+  async function queryFiles(pin: string): Promise<void> {
+    try {
+      // Replace '/api/your-endpoint' with your actual endpoint
+      const response = await fetch(`http://localhost:8080/file/query/${pin}`); // TODO make this domain an env variable
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const data = await response.json();
+
+      const fileArray = data.blobs.map((fileName: string) => {
+        const nameWithoutPath = fileName.split("/").pop() || fileName;
+        return new File([new Blob()], nameWithoutPath, { type: "text/plain" });
+      });
+
+      setFiles(fileArray);
+    } catch (error) {
+      console.error("Error fetching blobs:", error);
+    }
+  }
+
   useEffect(() => {
-    const mockFiles = [
-      new File([""], "file1.txt"),
-      new File([""], "file2.txt"),
-    ];
-    setFiles(mockFiles);
-    return () => {
-      console.log("Component unmounted");
-    };
-  }, []); // Add any dependencies inside the array if needed
+    queryFiles("1234");
+  }, []);
 
   const handleFileUpload = (files: File[]) => {
     files.forEach((file) => {
@@ -40,11 +55,12 @@ const Files: React.FC<FilesProps> = () => {
       <div className="flex w-2/3 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
         <UploadWindow onFileUpload={handleFileUpload} />
         <FilesWindow onFileDrop={handleFileUpload} files={files} />
+        <PinWindow pin="1234" />
       </div>
       <div>
         <button
           onClick={() => setFiles([...files, new File([""], "fileX.txt")])}
-          className="flex items-center text-nowrap px-4 font-semibold"
+          className="flex items-center text-nowrap px-4"
         >
           DEBUG Add File
         </button>
@@ -56,16 +72,5 @@ const Files: React.FC<FilesProps> = () => {
     </div>
   );
 };
-
-// const AudioPlayer = () => {
-//   return (
-//     <div>
-//       <audio autoPlay>
-//         <source src={myAudio} type="audio/mpeg" />
-//         Your browser does not support the audio element.
-//       </audio>
-//     </div>
-//   );
-// };
 
 export default Files;

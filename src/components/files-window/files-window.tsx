@@ -6,6 +6,7 @@ type Props = {
   files: File[];
 };
 
+// TODO - Turn this into it's own component. Change the icon depending on the file extension
 const FileItem: React.FC<{ file: File }> = ({ file }) => {
   const [isClicked, setIsClicked] = useState(false);
 
@@ -15,11 +16,14 @@ const FileItem: React.FC<{ file: File }> = ({ file }) => {
 
   return (
     <div
-      className={`flex max-h-16 min-h-20 w-16 cursor-pointer flex-col items-center gap-2 truncate border-2 p-2 ${isClicked ? "border-blue-700 bg-blue-300" : "border-transparent"} hover:cursor-pointer`}
       onClick={handleClick}
+      className={`flex h-[75px] w-20 cursor-pointer flex-col items-center gap-2 truncate border pt-2 text-center ${isClicked ? "border-blue-700 bg-blue-400" : "border-transparent"} hover:cursor-pointer`}
+      title={file.name}
     >
       <img src="file-icon.png" alt="file icon" />
-      <p className="text-md select-none">{file.name}</p>
+      <h1 className="w-[74px] overflow-hidden text-ellipsis text-xs tracking-wide">
+        {file.name}
+      </h1>
     </div>
   );
 };
