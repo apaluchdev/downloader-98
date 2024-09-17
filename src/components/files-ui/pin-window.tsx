@@ -6,7 +6,7 @@ interface PinWindowProps {
 
 const PinWindow: React.FC<PinWindowProps> = ({ pin }) => {
   return (
-    <div className="window w-[300px]">
+    <div className="window w-[200px]">
       <div className="title-bar">
         <div className="title-bar-text">PIN</div>
         <div className="title-bar-controls">
@@ -17,7 +17,8 @@ const PinWindow: React.FC<PinWindowProps> = ({ pin }) => {
       </div>
       <div className="window-body flex gap-2">
         <label htmlFor="pin">PIN</label>
-        <input id="pin" type="text" value="1234" />
+        <input className="w-16" id="pin" type="text" defaultValue="1234" />
+        <button>Connect</button>
       </div>
     </div>
   );

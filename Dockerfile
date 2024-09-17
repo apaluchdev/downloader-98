@@ -13,6 +13,8 @@ RUN npm install
 # Copy the rest of the application code to the working directory
 COPY . .
 
+ENV REACT_APP_API_DOMAIN=gozurite:8080
+
 # Build the app
 RUN npm run build
 

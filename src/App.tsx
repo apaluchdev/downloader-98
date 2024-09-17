@@ -1,5 +1,5 @@
 import "./App.css";
-import Files from "./components/files";
+import Files from "./components/files-ui/desktop";
 
 function App() {
   return (

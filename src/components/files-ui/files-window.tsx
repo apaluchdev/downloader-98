@@ -1,31 +1,11 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import FileIcon from "./file-icon";
 
 type Props = {
-  onFileDrop: (files: File[]) => void;
+  handleFileDownload: (filename: string) => void;
+  handleFileUpload: (files: File[]) => void;
   files: File[];
-};
-
-// TODO - Turn this into it's own component. Change the icon depending on the file extension
-const FileItem: React.FC<{ file: File }> = ({ file }) => {
-  const [isClicked, setIsClicked] = useState(false);
-
-  const handleClick = () => {
-    setIsClicked(!isClicked); // Toggle the clicked state
-  };
-
-  return (
-    <div
-      onClick={handleClick}
-      className={`flex h-[75px] w-20 cursor-pointer flex-col items-center gap-2 truncate border pt-2 text-center ${isClicked ? "border-blue-700 bg-blue-400" : "border-transparent"} hover:cursor-pointer`}
-      title={file.name}
-    >
-      <img src="file-icon.png" alt="file icon" />
-      <h1 className="w-[74px] overflow-hidden text-ellipsis text-xs tracking-wide">
-        {file.name}
-      </h1>
-    </div>
-  );
 };
 
 const FilesWindow: React.FC<Props> = (props) => {
@@ -33,7 +13,7 @@ const FilesWindow: React.FC<Props> = (props) => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     console.log(acceptedFiles);
-    // Handle the files here (e.g., upload or display)
+    props.handleFileUpload(acceptedFiles);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -42,7 +22,7 @@ const FilesWindow: React.FC<Props> = (props) => {
   });
 
   return (
-    <div className="window min-w-[400px] scroll-smooth">
+    <div className="window min-w-[480px] scroll-smooth">
       <div className="title-bar mb-1">
         <div className="title-bar-text">Files</div>
         <div className="title-bar-controls">
@@ -68,7 +48,11 @@ const FilesWindow: React.FC<Props> = (props) => {
           {files.length > 0 && (
             <div className="flex flex-wrap justify-center gap-2">
               {files.map((file, index) => (
-                <FileItem key={index} file={file} />
+                <FileIcon
+                  handleFileDownload={props.handleFileDownload}
+                  key={index}
+                  file={file}
+                />
               ))}
             </div>
           )}

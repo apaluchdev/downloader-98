@@ -1,17 +1,16 @@
-import { GitBranchIcon, Github, GithubIcon, Plus } from "lucide-react";
+import { Github } from "lucide-react";
 import React, { useCallback } from "react";
 import { Button } from "../ui/button";
-import { on } from "events";
 import { useDropzone } from "react-dropzone";
 
 type Props = {
-  onFileUpload: (files: File[]) => void;
+  handleFileUpload: (files: File[]) => void;
 };
 
 const UploadWindow: React.FC<Props> = (props) => {
-  const { onFileUpload } = props;
+  const { handleFileUpload } = props;
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    onFileUpload(acceptedFiles);
+    handleFileUpload(acceptedFiles);
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
