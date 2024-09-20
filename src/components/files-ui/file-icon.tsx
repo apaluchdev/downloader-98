@@ -20,7 +20,7 @@ const FileIcon: React.FC<FileProps> = ({ file, handleFileDownload }) => {
       title={file.name}
     >
       <img src="file-icon.png" alt="file icon" />
-      <h1 className="w-[74px] overflow-hidden text-ellipsis text-xs tracking-wide">
+      <h1 className="w-[74px] overflow-hidden text-ellipsis text-xs font-semibold tracking-wide">
         {file.name}
       </h1>
     </div>

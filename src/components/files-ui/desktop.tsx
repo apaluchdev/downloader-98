@@ -1,8 +1,11 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import UploadWindow from "./upload-window";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import UploadWindow from "./primary-window";
 import FilesWindow from "./files-window";
 import "98.css";
 import PinWindow from "./pin-window";
+import ProgressWindow from "./progress-window/progress-window";
+import UploadBlob from "../../lib/uploader";
+import Modal from "../ui/modal";
 
 interface FilesProps {
   // Define any props you need for the component here
@@ -10,19 +13,21 @@ interface FilesProps {
 
 const Files: React.FC<FilesProps> = () => {
   const [isQueryingFiles, setIsQueryingFiles] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [files, setFiles] = useState<File[]>([]);
   const [pin, setPIN] = useState<string>("1234");
+  const abortRef = useRef<(() => void) | null>(null);
 
   // QUERY
   async function onQueryFiles(pin: string): Promise<void> {
     try {
-      // TODO - Add a win-98 loading spinner
       setIsQueryingFiles(true);
 
       const timeout = async (ms: number) =>
         new Promise((resolve) => setTimeout(resolve, ms));
       await timeout(2000);
-      // Replace '/api/your-endpoint' with your actual endpoint
+
       const response = await fetch(
         `http://${process.env.REACT_APP_API_DOMAIN}/file/query/${pin}`,
       ); // TODO make this domain an env variable
@@ -66,29 +71,17 @@ const Files: React.FC<FilesProps> = () => {
 
   // UPLOAD
   async function handleFileUpload(files: File[]): Promise<void> {
-    console.log("Uploading file", files[0].name);
-    const formData = new FormData();
-    formData.append("file", files[0]);
-    formData.append("filename", files[0].name);
-    formData.append("pin", pin);
-
-    try {
-      const response = await fetch(
-        `http://${process.env.REACT_APP_API_DOMAIN}/file`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
-
-      if (response.ok) {
-        console.log("File uploaded successfully");
-      } else {
-        console.error("File upload failed");
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
+    setIsUploading(true);
+    await UploadBlob(
+      files[0],
+      pin,
+      setUploadProgress,
+      () => {
+        setIsUploading(false);
+        onQueryFiles(pin);
+      },
+      abortRef,
+    );
   }
 
   async function triggerBrowserDownload(
@@ -104,6 +97,18 @@ const Files: React.FC<FilesProps> = () => {
     window.URL.revokeObjectURL(url);
   }
 
+  const handleAbortUpload = () => {
+    console.log("Aborting upload...");
+    if (abortRef.current) {
+      abortRef.current();
+      setIsUploading(false);
+    }
+  };
+
+  const handlePinEntered = () => {
+    onQueryFiles(pin);
+  };
+
   useEffect(() => {
     onQueryFiles(pin);
   }, []);
@@ -112,32 +117,30 @@ const Files: React.FC<FilesProps> = () => {
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-8 p-6">
       <div className="flex w-2/3 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
         <div className="flex flex-col gap-4">
-          <PinWindow pin={pin} />
+          <PinWindow pin={pin} handlePinEntered={handlePinEntered} />
           <UploadWindow handleFileUpload={handleFileUpload} />
         </div>
 
-        <div className="self-end">
+        <div className="md:self-end">
           <FilesWindow
             handleFileDownload={handleFileDownload}
             handleFileUpload={handleFileUpload}
-            files={files}
-          />{" "}
+            files={isQueryingFiles ? undefined : files}
+          />
         </div>
-      </div>
-      <div>
-        <button
-          onClick={() => setFiles([...files, new File([""], "fileX.txt")])}
-          className="flex items-center text-nowrap px-4"
-        >
-          DEBUG Add File
-        </button>
+        <div className="self-end">
+          <Modal isOpen={isUploading} onClose={() => setIsUploading(false)}>
+            <ProgressWindow
+              progress={uploadProgress}
+              windowTitle="Uploading - FILENAME"
+              onCancel={handleAbortUpload}
+            />
+          </Modal>
+        </div>
       </div>
       <div className="window fixed bottom-0 left-0 flex w-screen items-start">
         <button className="start-button m-0 p-0"></button>
       </div>
-      <button onClick={async () => await handleFileDownload("flashcard.png")}>
-        Download File
-      </button>
     </div>
   );
 };

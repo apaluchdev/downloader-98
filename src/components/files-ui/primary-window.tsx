@@ -7,7 +7,7 @@ type Props = {
   handleFileUpload: (files: File[]) => void;
 };
 
-const UploadWindow: React.FC<Props> = (props) => {
+const PrimaryWindow: React.FC<Props> = (props) => {
   const { handleFileUpload } = props;
   const onDrop = useCallback((acceptedFiles: File[]) => {
     handleFileUpload(acceptedFiles);
@@ -22,7 +22,7 @@ const UploadWindow: React.FC<Props> = (props) => {
     <div className="window h-full min-w-[180px]">
       <div className="title-bar">
         {/* TODO - Create an error window if no file is selected */}
-        <div className="title-bar-text">Upload File</div>
+        <div className="title-bar-text">File Menu</div>
         <div className="title-bar-controls">
           <button aria-label="Minimize" />
           <button aria-label="Maximize" />
@@ -45,4 +45,4 @@ const UploadWindow: React.FC<Props> = (props) => {
   );
 };
 
-export default UploadWindow;
+export default PrimaryWindow;

@@ -5,7 +5,7 @@ import FileIcon from "./file-icon";
 type Props = {
   handleFileDownload: (filename: string) => void;
   handleFileUpload: (files: File[]) => void;
-  files: File[];
+  files: File[] | undefined;
 };
 
 const FilesWindow: React.FC<Props> = (props) => {
@@ -20,6 +20,23 @@ const FilesWindow: React.FC<Props> = (props) => {
     onDrop,
     noClick: true,
   });
+
+  if (files == undefined)
+    return (
+      <div className="window min-w-[480px] scroll-smooth">
+        <div className="title-bar mb-1">
+          <div className="title-bar-text">Files</div>
+          <div className="title-bar-controls">
+            <button aria-label="Minimize" />
+            <button aria-label="Maximize" />
+            <button aria-label="Close" />
+          </div>
+        </div>
+        <div className="!m-0.5 flex max-h-[260px] min-h-[200px] w-full items-center justify-center bg-white p-4">
+          <img src="/torch-folder.gif" className="w-20"></img>
+        </div>
+      </div>
+    );
 
   return (
     <div className="window min-w-[480px] scroll-smooth">

@@ -1,0 +1,4 @@
+- Only allow uploads or deletes - no overwrites
+- Make the Download file do something
+- Make the cancel button actually cancel the upload
+- A notepad section that offers pastebin-like functionality
