@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import FileIcon from "./file-icon";
+import FileExtended from "@/lib/file-extended";
 
 type Props = {
   handleFileDownload: (filename: string) => void;
   handleFileUpload: (files: File[]) => void;
-  files: File[] | undefined;
+  handleFileClick: (filename: string) => void;
+  files: FileExtended[] | undefined;
 };
 
 const FilesWindow: React.FC<Props> = (props) => {
@@ -69,6 +71,7 @@ const FilesWindow: React.FC<Props> = (props) => {
                   handleFileDownload={props.handleFileDownload}
                   key={index}
                   file={file}
+                  handleFileClick={props.handleFileClick}
                 />
               ))}
             </div>

@@ -29,14 +29,14 @@ const PrimaryWindow: React.FC<Props> = (props) => {
           <button aria-label="Close" />
         </div>
       </div>
-      <div className="window-body flex h-[85%] flex-col justify-between gap-4 p-4">
-        <div className="flex scale-110 flex-col gap-4 font-semibold">
+      <div className="window-body flex h-[85%] flex-col justify-between gap-6 p-4">
+        <div className="flex scale-110 flex-col gap-2 font-semibold">
           <button>Download</button>
           <button {...getRootProps()}>Upload</button>
         </div>
-        <div className="flex scale-110 flex-col gap-4 font-semibold">
-          <Button className="self-center bg-transparent text-black hover:bg-transparent">
-            <Github />
+        <div className="flex scale-110 flex-col gap-2 font-semibold">
+          <Button className="h-5 w-full self-center rounded-none bg-transparent text-black hover:bg-transparent">
+            <Github size={15} />
           </Button>
           <button>About</button>
         </div>

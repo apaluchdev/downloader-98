@@ -4,12 +4,14 @@ interface FileProps {
   windowTitle: string;
   progress: number;
   onCancel: () => void;
+  onDone: () => void;
 }
 
 const ProgressWindow: React.FC<FileProps> = ({
   windowTitle,
   progress,
   onCancel,
+  onDone,
 }) => {
   console.log("Progress window has percentage", progress);
   const percentage = progress / 100;
@@ -43,7 +45,9 @@ const ProgressWindow: React.FC<FileProps> = ({
           </ul>
         </div>
         <div className="mt-8 flex gap-2 self-end font-semibold">
-          <button disabled>Done</button>
+          <button disabled={progress != 100} onClick={onDone}>
+            Done
+          </button>
           <button onClick={onCancel} className="w-16">
             Cancel
           </button>

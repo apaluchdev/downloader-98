@@ -6,7 +6,7 @@ interface PinWindowProps {
 }
 
 const PinWindow: React.FC<PinWindowProps> = ({ pin, handlePinEntered }) => {
-  const [inputValue, setInputValue] = useState("1234"); // State to store input value
+  const [inputValue, setInputValue] = useState(pin); // State to store input value
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value); // Update the state with the current input value
