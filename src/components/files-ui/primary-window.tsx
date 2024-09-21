@@ -5,10 +5,11 @@ import { useDropzone } from "react-dropzone";
 
 type Props = {
   handleFileUpload: (files: File[]) => void;
+  handleFileDownload: () => void;
 };
 
 const PrimaryWindow: React.FC<Props> = (props) => {
-  const { handleFileUpload } = props;
+  const { handleFileUpload, handleFileDownload } = props;
   const onDrop = useCallback((acceptedFiles: File[]) => {
     handleFileUpload(acceptedFiles);
   }, []);
@@ -31,7 +32,7 @@ const PrimaryWindow: React.FC<Props> = (props) => {
       </div>
       <div className="window-body flex h-[85%] flex-col justify-between gap-6 p-4">
         <div className="flex scale-110 flex-col gap-2 font-semibold">
-          <button>Download</button>
+          <button onClick={handleFileDownload}>Download</button>
           <button {...getRootProps()}>Upload</button>
         </div>
         <div className="flex scale-110 flex-col gap-2 font-semibold">

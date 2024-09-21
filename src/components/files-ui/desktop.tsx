@@ -19,6 +19,7 @@ const Files: React.FC<FilesProps> = () => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [files, setFiles] = useState<FileExtended[]>([]);
   const [pin, setPIN] = useState<string>("1234");
+  const pinRef = useRef<string | null>(null);
   const abortRef = useRef<(() => void) | null>(null);
 
   // QUERY
@@ -85,13 +86,14 @@ const Files: React.FC<FilesProps> = () => {
   // UPLOAD
   async function handleFileUpload(files: File[]): Promise<void> {
     setIsUploading(true);
+    console.log("Uploading file using pin", pinRef.current);
     await UploadBlob(
       files[0],
-      pin,
+      pinRef.current ?? "",
       setUploadProgress,
       () => {
         //setIsUploading(false);
-        onQueryFiles(pin);
+        onQueryFiles(pinRef.current ?? "");
       },
       abortRef,
     );
@@ -131,14 +133,11 @@ const Files: React.FC<FilesProps> = () => {
     setFiles(newFiles);
   };
 
-  const handlePinEntered = (pin: string) => {
-    onQueryFiles(pin);
-    setPIN(pin);
-  };
-
   useEffect(() => {
+    console.log("PIN updated:", pin);
+    pinRef.current = pin;
     onQueryFiles(pin);
-  }, []);
+  }, [pin]);
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-8 p-6">
@@ -148,8 +147,14 @@ const Files: React.FC<FilesProps> = () => {
       <div className="flex w-2/3 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
         <div className="flex flex-col gap-4">
           <TodoWindow />
-          <PinWindow pin={pin} handlePinEntered={handlePinEntered} />
-          <PrimaryWindow handleFileUpload={handleFileUpload} />
+          <PinWindow pin={pin} setPIN={setPIN} />
+          <PrimaryWindow
+            handleFileUpload={handleFileUpload}
+            handleFileDownload={() =>
+              files.filter((x) => x.IsClicked).length > 0 &&
+              handleFileDownload(files.filter((x) => x.IsClicked)[0].name)
+            }
+          />
         </div>
 
         <div className="md:self-end">

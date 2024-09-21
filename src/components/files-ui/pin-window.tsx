@@ -2,10 +2,10 @@ import React, { useState } from "react";
 
 interface PinWindowProps {
   pin: string;
-  handlePinEntered: (text: string) => void; // Callback function passed via props
+  setPIN: (text: string) => void;
 }
 
-const PinWindow: React.FC<PinWindowProps> = ({ pin, handlePinEntered }) => {
+const PinWindow: React.FC<PinWindowProps> = ({ pin, setPIN }) => {
   const [inputValue, setInputValue] = useState(pin); // State to store input value
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,7 +13,7 @@ const PinWindow: React.FC<PinWindowProps> = ({ pin, handlePinEntered }) => {
   };
 
   const handleSubmit = () => {
-    handlePinEntered(inputValue); // Call the provided callback with the current input value
+    setPIN(inputValue);
   };
 
   return (

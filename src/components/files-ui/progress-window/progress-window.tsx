@@ -13,7 +13,6 @@ const ProgressWindow: React.FC<FileProps> = ({
   onCancel,
   onDone,
 }) => {
-  console.log("Progress window has percentage", progress);
   const percentage = progress / 100;
   const loadingSquareCount = Array.from({ length: Math.ceil(percentage * 23) });
 
@@ -22,17 +21,20 @@ const ProgressWindow: React.FC<FileProps> = ({
   };
 
   return (
-    <div className="window h-[180px] w-[400px]">
+    <div className="window h-[200px] w-[400px]">
       <div className="title-bar">
         <div className="title-bar-text">{windowTitle}</div>
         <div className="title-bar-controls">
           <button aria-label="Minimize"></button>
           <button aria-label="Maximize"></button>
-          <button aria-label="Close"></button>
+          <button onClick={onCancel} aria-label="Close"></button>
         </div>
       </div>
       <div className="window-body flex flex-col gap-2">
-        <img src="/file-copy.gif" className="-mt-4 w-64"></img>
+        {progress < 100 && <img src="/file-copy.gif" className="w-64"></img>}
+        {progress == 100 && (
+          <img src="/checkmark.png" className="ml-2 w-8 pt-6"></img>
+        )}
         <div className="flex h-6 flex-col gap-2">
           <p>Uploading... {progress}%</p>
 
