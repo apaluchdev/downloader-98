@@ -13,7 +13,7 @@ async function UploadBlob(
   try {
     const xhr = new XMLHttpRequest();
 
-    xhr.open("POST", `http://${process.env.REACT_APP_API_DOMAIN}/file`, true);
+    xhr.open("POST", `${process.env.REACT_APP_API_DOMAIN}/file`, true);
 
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {

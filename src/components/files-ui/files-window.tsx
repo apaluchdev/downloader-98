@@ -25,7 +25,7 @@ const FilesWindow: React.FC<Props> = (props) => {
 
   if (files == undefined)
     return (
-      <div className="window min-w-[480px] scroll-smooth">
+      <div className="window min-w-[200px] scroll-smooth md:w-[480px]">
         <div className="title-bar mb-1">
           <div className="title-bar-text">Files</div>
           <div className="title-bar-controls">

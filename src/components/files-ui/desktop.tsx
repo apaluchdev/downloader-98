@@ -33,7 +33,7 @@ const Files: React.FC<FilesProps> = () => {
 
       console.log("Querying files for pin:", pin);
       const response = await fetch(
-        `http://${process.env.REACT_APP_API_DOMAIN}/file/query/${pin}`,
+        `${process.env.REACT_APP_API_DOMAIN}/file/query/${pin}`,
       ); // TODO make this domain an env variable
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
@@ -67,7 +67,7 @@ const Files: React.FC<FilesProps> = () => {
     try {
       // TODO make this domain an env variable
       const response = await fetch(
-        `http://${process.env.REACT_APP_API_DOMAIN}/file/${pin}/${fileName}`,
+        `${process.env.REACT_APP_API_DOMAIN}/file/${pin}/${fileName}`,
       );
 
       if (!response.ok) {
@@ -176,7 +176,7 @@ const Files: React.FC<FilesProps> = () => {
           </Modal>
         </div>
       </div>
-      <div className="fixed bottom-16 right-12 flex w-10 items-end">
+      <div className="fixed bottom-16 right-12 flex w-10 items-end opacity-0 md:opacity-100">
         <div className="flex flex-col gap-2">
           <img src="/recycle_bin_full-2.png" className=""></img>
           <p className="text-center text-white">Recycle Bin</p>

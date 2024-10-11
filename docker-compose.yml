@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   react-app:
     image: apaluch/downloader-98:latest
@@ -9,7 +7,7 @@ services:
       - azurite
     networks:
       - react-network
-      
+        
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:

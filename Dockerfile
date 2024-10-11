@@ -1,31 +1,26 @@
 # Use an official Node.js runtime as a parent image
 FROM node:18-alpine
 
-# Set the working directory in the container
+ENV REACT_APP_API_DOMAIN=https://gozurite.apaluchdev.com
+
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy package.json and install dependencies
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code to the working directory
+# Copy the rest of the application code
 COPY . .
 
-ENV REACT_APP_API_DOMAIN=localhost:8080
-
-# Build the app
+# Build the React app
 RUN npm run build
 
-# Use an official Nginx image to serve the build
-FROM nginx:alpine
+# Install a simple web server
+RUN npm install -g serve
 
-# Copy the build output to Nginx's default HTML directory
-COPY --from=0 /app/build /usr/share/nginx/html
+# Command to run the app
+CMD ["serve", "-s", "build"]
 
-# Expose port 80
-EXPOSE 80
-
-# Start Nginx server
-CMD ["nginx", "-g", "daemon off;"]
+# Expose the port the app runs on
+EXPOSE 3000
