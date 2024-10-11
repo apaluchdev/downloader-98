@@ -6,6 +6,7 @@ import { useDropzone } from "react-dropzone";
 type Props = {
   handleFileUpload: (files: File[]) => void;
   handleFileDownload: () => void;
+  isFileSelected: boolean;
 };
 
 const PrimaryWindow: React.FC<Props> = (props) => {
@@ -32,7 +33,9 @@ const PrimaryWindow: React.FC<Props> = (props) => {
       </div>
       <div className="window-body flex h-[85%] flex-col justify-between gap-6 p-4">
         <div className="flex scale-110 flex-col gap-2 font-semibold">
-          <button onClick={handleFileDownload}>Download</button>
+          <button onClick={handleFileDownload} disabled={props.isFileSelected}>
+            Download
+          </button>
           <button {...getRootProps()}>Upload</button>
         </div>
         <div className="flex scale-110 flex-col gap-2 font-semibold">

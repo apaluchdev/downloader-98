@@ -2,7 +2,7 @@ services:
   react-app:
     image: apaluch/downloader-98:latest
     ports:
-      - "3000:80"  # Expose React app on port 3000
+      - "3000:3000"  # Expose React app on port 3000
     depends_on:
       - azurite
     networks:

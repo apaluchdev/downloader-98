@@ -154,6 +154,7 @@ const Files: React.FC<FilesProps> = () => {
               files.filter((x) => x.IsClicked).length > 0 &&
               handleFileDownload(files.filter((x) => x.IsClicked)[0].name)
             }
+            isFileSelected={files.filter((x) => x.IsClicked).length == 1}
           />
         </div>
 

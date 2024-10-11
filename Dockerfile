@@ -2,6 +2,7 @@
 FROM node:18-alpine
 
 ENV REACT_APP_API_DOMAIN=https://gozurite.apaluchdev.com
+#ENV REACT_APP_API_DOMAIN=http://localhost:8080
 
 # Set working directory
 WORKDIR /app
