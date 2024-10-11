@@ -1,7 +1,8 @@
 import { Github } from "lucide-react";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Button } from "../ui/button";
 import { useDropzone } from "react-dropzone";
+import Modal from "../ui/modal";
 
 type Props = {
   handleFileUpload: (files: File[]) => void;
@@ -11,6 +12,7 @@ type Props = {
 
 const PrimaryWindow: React.FC<Props> = (props) => {
   const { handleFileUpload, handleFileDownload } = props;
+  const [isAboutOpen, setIsAboutOpen] = useState<boolean>(false);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     handleFileUpload(acceptedFiles);
   }, []);
@@ -22,6 +24,32 @@ const PrimaryWindow: React.FC<Props> = (props) => {
 
   return (
     <div className="window h-full min-w-[180px]">
+      <div className="absolute flex">
+        <Modal isOpen={isAboutOpen} onClose={() => console.log("hi")}>
+          <div className="window h-full min-w-[180px]">
+            <div className="title-bar">
+              {/* TODO - Create an error window if no file is selected */}
+              <div className="title-bar-text">About</div>
+              <div className="title-bar-controls">
+                <button aria-label="Minimize" />
+                <button aria-label="Maximize" />
+                <button
+                  onClick={() => setIsAboutOpen(false)}
+                  aria-label="Close"
+                />
+              </div>
+            </div>
+            <div className="window-body flex h-[85%] flex-col justify-between p-4">
+              <p>
+                Easy file transfer between devices. Set a PIN and upload files.
+              </p>
+              <p>Download them on another device using the same PIN.</p>
+              <p>Files expire after 6 hours.</p>
+            </div>
+          </div>
+        </Modal>
+      </div>
+
       <div className="title-bar">
         {/* TODO - Create an error window if no file is selected */}
         <div className="title-bar-text">File Menu</div>
@@ -40,9 +68,14 @@ const PrimaryWindow: React.FC<Props> = (props) => {
         </div>
         <div className="flex scale-110 flex-col gap-2 font-semibold">
           <Button className="h-5 w-full self-center rounded-none bg-transparent text-black hover:bg-transparent">
-            <Github size={15} />
+            <a
+              className="text-black"
+              href="https://www.linkedin.com/in/adrian-paluch-675b32178/"
+            >
+              <Github size={15} />
+            </a>
           </Button>
-          <button>About</button>
+          <button onClick={() => setIsAboutOpen(true)}>About</button>
         </div>
       </div>
     </div>

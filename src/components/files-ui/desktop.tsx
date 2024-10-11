@@ -18,7 +18,9 @@ const Files: React.FC<FilesProps> = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [files, setFiles] = useState<FileExtended[]>([]);
-  const [pin, setPIN] = useState<string>("1234");
+  const [pin, setPIN] = useState<string>(
+    Math.floor(10000 + Math.random() * 90000).toString(),
+  ); // Random 5 digit PIN
   const pinRef = useRef<string | null>(null);
   const abortRef = useRef<(() => void) | null>(null);
 
@@ -141,11 +143,22 @@ const Files: React.FC<FilesProps> = () => {
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-8 p-6">
+      <div className="window mb-8 hidden p-4 md:block">
+        <div className="title-bar mb-1">
+          <div className="title-bar-text">Welcome to</div>
+          <div className="title-bar-controls">
+            <button aria-label="Minimize" />
+            <button aria-label="Maximize" />
+            <button aria-label="Close" />
+          </div>
+        </div>
+        <h1 className="p-4 text-6xl">Downloader98</h1>
+      </div>
       <h1 className="window w-32 scale-125 text-center text-xl font-semibold">
         Current PIN: {pin}
       </h1>
-      <div className="flex w-2/3 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
-        <div className="flex flex-col gap-4">
+      <div className="flex w-3/4 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
+        <div className="flex-2 flex flex-col gap-4">
           <TodoWindow />
           <PinWindow pin={pin} setPIN={setPIN} />
           <PrimaryWindow
@@ -158,7 +171,7 @@ const Files: React.FC<FilesProps> = () => {
           />
         </div>
 
-        <div className="md:self-end">
+        <div className="flex-1 md:self-end">
           <FilesWindow
             handleFileDownload={handleFileDownload}
             handleFileUpload={handleFileUpload}
