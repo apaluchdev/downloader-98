@@ -28,11 +28,6 @@ const Files: React.FC<FilesProps> = () => {
   async function onQueryFiles(pin: string): Promise<void> {
     try {
       setIsQueryingFiles(true);
-
-      const timeout = async (ms: number) =>
-        new Promise((resolve) => setTimeout(resolve, ms));
-      await timeout(2000);
-
       console.log("Querying files for pin:", pin);
       const response = await fetch(
         `${process.env.REACT_APP_API_DOMAIN}/file/query/${pin}`,
@@ -142,7 +137,7 @@ const Files: React.FC<FilesProps> = () => {
   }, [pin]);
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center gap-8 p-6">
+    <div className="flex h-screen w-screen flex-col items-center gap-8 p-6">
       <div className="window mb-8 hidden p-4 md:block">
         <div className="title-bar mb-1">
           <div className="title-bar-text">Welcome to</div>
@@ -157,9 +152,14 @@ const Files: React.FC<FilesProps> = () => {
       <h1 className="window w-32 scale-125 text-center text-xl font-semibold">
         Current PIN: {pin}
       </h1>
-      <div className="flex w-3/4 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
+      <div
+        id="container-primary"
+        className="flex w-3/4 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row"
+      >
         <div className="flex-2 flex flex-col gap-4">
-          <TodoWindow />
+          <div className="hidden md:block">
+            <TodoWindow />
+          </div>
           <PinWindow pin={pin} setPIN={setPIN} />
           <PrimaryWindow
             handleFileUpload={handleFileUpload}
@@ -171,7 +171,7 @@ const Files: React.FC<FilesProps> = () => {
           />
         </div>
 
-        <div className="flex-1 md:self-end">
+        <div className="w-full flex-1 md:self-end">
           <FilesWindow
             handleFileDownload={handleFileDownload}
             handleFileUpload={handleFileUpload}

@@ -2,6 +2,14 @@
   background-color: #00807F;
 }
 
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: black;
+    color: white;
+  }
+}
+
 .App-link {
   color: #61dafb;
 }

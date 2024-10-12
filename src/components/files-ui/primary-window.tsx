@@ -16,11 +16,12 @@ const PrimaryWindow: React.FC<Props> = (props) => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     handleFileUpload(acceptedFiles);
   }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    maxFiles: 1,
-    maxSize: 50 * 1024 * 1024,
-  });
+  const { getInputProps, isDragAccept, isDragReject, getRootProps, open } =
+    useDropzone({
+      onDrop,
+      maxFiles: 1,
+      maxSize: 50 * 1024 * 1024,
+    });
 
   return (
     <div className="window h-full min-w-[180px]">
@@ -61,11 +62,15 @@ const PrimaryWindow: React.FC<Props> = (props) => {
       </div>
       <div className="window-body flex h-[85%] flex-col justify-between gap-6 p-4">
         <div className="flex scale-110 flex-col gap-2 font-semibold">
-          <button onClick={handleFileDownload} disabled={props.isFileSelected}>
+          <button onClick={handleFileDownload} disabled={!props.isFileSelected}>
             Download
           </button>
-          <button {...getRootProps()}>Upload</button>
+          <button {...getRootProps({})} onClick={open}>
+            <input {...getInputProps()} />
+            <p>Upload</p>
+          </button>
         </div>
+        {/* TODO - Hide these two on mobile */}
         <div className="flex scale-110 flex-col gap-2 font-semibold">
           <Button className="h-5 w-full self-center rounded-none bg-transparent text-black hover:bg-transparent">
             <a
