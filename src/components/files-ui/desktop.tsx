@@ -9,6 +9,7 @@ import PrimaryWindow from "./primary-window";
 import FileExtended from "@/lib/file-extended";
 import TodoWindow from "./todo-window";
 import Window98 from "../ui/window98";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface FilesProps {
   // Define any props you need for the component here
@@ -19,9 +20,7 @@ const Files: React.FC<FilesProps> = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [files, setFiles] = useState<FileExtended[]>([]);
-  const [pin, setPIN] = useState<string>(
-    Math.floor(10000 + Math.random() * 90000).toString(),
-  ); // Random 5 digit PIN
+  const [pin, setPIN] = useState<string>(Math.floor(10000 + Math.random() * 90000).toString()); // Random 5 digit PIN
   const pinRef = useRef<string | null>(null);
   const abortRef = useRef<(() => void) | null>(null);
 
@@ -30,9 +29,7 @@ const Files: React.FC<FilesProps> = () => {
     try {
       setIsQueryingFiles(true);
       console.log("Querying files for pin:", pin);
-      const response = await fetch(
-        `${process.env.REACT_APP_API_DOMAIN}/file/query/${pin}`,
-      ); // TODO make this domain an env variable
+      const response = await fetch(`${process.env.REACT_APP_API_DOMAIN}/file/query/${pin}`); // TODO make this domain an env variable
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
@@ -64,9 +61,7 @@ const Files: React.FC<FilesProps> = () => {
   async function handleFileDownload(fileName: string): Promise<void> {
     try {
       // TODO make this domain an env variable
-      const response = await fetch(
-        `${process.env.REACT_APP_API_DOMAIN}/file/${pin}/${fileName}`,
-      );
+      const response = await fetch(`${process.env.REACT_APP_API_DOMAIN}/file/${pin}/${fileName}`);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
@@ -90,17 +85,13 @@ const Files: React.FC<FilesProps> = () => {
       pinRef.current ?? "",
       setUploadProgress,
       () => {
-        //setIsUploading(false);
         onQueryFiles(pinRef.current ?? "");
       },
       abortRef,
     );
   }
 
-  async function triggerBrowserDownload(
-    url: string,
-    fileName: string,
-  ): Promise<void> {
+  async function triggerBrowserDownload(url: string, fileName: string): Promise<void> {
     const a = document.createElement("a");
     a.href = url;
     a.download = fileName;
@@ -142,8 +133,9 @@ const Files: React.FC<FilesProps> = () => {
       <Window98 title="Welcome to" className="mb-8 hidden p-4 md:block">
         <h1 className="p-4 text-6xl">Downloader98</h1>
       </Window98>
-      <h1 className="window w-32 scale-125 text-center text-xl font-semibold">
-        Current PIN: {pin}
+      <h1 className="window flex flex-col !p-2 text-center font-semibold">
+        <p className="text-lg">Current PIN: {pin}</p>
+        <p>Expires: 22 Hours</p>
       </h1>
       <div className="flex w-3/4 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
         <div className="flex-2 flex flex-col gap-4">
@@ -153,10 +145,7 @@ const Files: React.FC<FilesProps> = () => {
           <PinWindow pin={pin} setPIN={setPIN} />
           <PrimaryWindow
             handleFileUpload={handleFileUpload}
-            handleFileDownload={() =>
-              files.filter((x) => x.IsClicked).length > 0 &&
-              handleFileDownload(files.filter((x) => x.IsClicked)[0].name)
-            }
+            handleFileDownload={() => files.filter((x) => x.IsClicked).length > 0 && handleFileDownload(files.filter((x) => x.IsClicked)[0].name)}
             isFileSelected={files.filter((x) => x.IsClicked).length == 1}
           />
         </div>
@@ -171,12 +160,7 @@ const Files: React.FC<FilesProps> = () => {
         </div>
         <div className="self-end">
           <Modal isOpen={isUploading} onClose={() => setIsUploading(false)}>
-            <ProgressWindow
-              progress={uploadProgress}
-              windowTitle="Uploading"
-              onCancel={handleAbortUpload}
-              onDone={() => setIsUploading(false)}
-            />
+            <ProgressWindow progress={uploadProgress} windowTitle="Uploading" onCancel={handleAbortUpload} onDone={() => setIsUploading(false)} />
           </Modal>
         </div>
       </div>

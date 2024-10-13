@@ -8,12 +8,7 @@ interface FileProps {
   onDone: () => void;
 }
 
-const ProgressWindow: React.FC<FileProps> = ({
-  windowTitle,
-  progress,
-  onCancel,
-  onDone,
-}) => {
+const ProgressWindow: React.FC<FileProps> = ({ windowTitle, progress, onCancel, onDone }) => {
   const percentage = progress / 100;
   const loadingSquareCount = Array.from({ length: Math.ceil(percentage * 23) });
 
@@ -25,9 +20,7 @@ const ProgressWindow: React.FC<FileProps> = ({
     <Window98 title={windowTitle} className="h-[200px] w-[400px]">
       <div className="window-body flex flex-col gap-2">
         {progress < 100 && <img src="/file-copy.gif" className="w-64"></img>}
-        {progress == 100 && (
-          <img src="/checkmark.png" className="ml-2 w-8 pt-6"></img>
-        )}
+        {progress == 100 && <img src="/checkmark.png" className="ml-2 w-8 pt-6"></img>}
         <div className="flex h-6 flex-col gap-2">
           <p>Uploading... {progress}%</p>
 

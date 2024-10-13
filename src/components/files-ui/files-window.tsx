@@ -24,30 +24,21 @@ const FilesWindow: React.FC<Props> = (props) => {
     noClick: true, // Need to allow users to click the file icons without prompting another upload
   });
 
-  // Ensure the entire display area, including the FileDisplay component, is wrapped in getRootProps
   return (
     <Window98 title="Files" className="scroll-smooth md:max-w-[600px]">
       <div
         {...getRootProps()} // Ensure this wraps the file display
         className={`!m-0.5 flex max-h-[260px] min-h-[220px] flex-wrap overflow-y-scroll bg-white p-4 md:min-h-[280px]`}
       >
-        <div
-          className={`m-2 flex w-full border-2 border-dashed border-gray-300 p-2 ${
-            isDragActive && "border-blue-500 bg-blue-100"
-          }`}
-        >
-          <FileDisplay {...props} /> {/* Pass necessary props */}
+        <div className={`m-2 flex w-full border-2 border-dashed border-gray-300 p-2 ${isDragActive && "border-blue-500 bg-blue-100"}`}>
+          <FileDisplay {...props} />
         </div>
       </div>
     </Window98>
   );
 };
 
-const FileDisplay: React.FC<Props> = ({
-  files,
-  handleFileDownload,
-  handleFileClick,
-}) => {
+const FileDisplay: React.FC<Props> = ({ files, handleFileDownload, handleFileClick }) => {
   if (files === undefined) {
     return (
       <div className="flex w-full items-center justify-center">
@@ -57,22 +48,13 @@ const FileDisplay: React.FC<Props> = ({
   }
 
   if (files.length < 1) {
-    return (
-      <h4 className="flex w-full items-center justify-center text-gray-400">
-        Drag and drop files
-      </h4>
-    );
+    return <h4 className="flex w-full items-center justify-center text-gray-400">Drag and drop files</h4>;
   }
 
   return (
     <div className="flex flex-wrap justify-center gap-2">
       {files.map((file, index) => (
-        <FileIcon
-          handleFileDownload={handleFileDownload}
-          key={index}
-          file={file}
-          handleFileClick={handleFileClick}
-        />
+        <FileIcon handleFileDownload={handleFileDownload} key={index} file={file} handleFileClick={handleFileClick} />
       ))}
     </div>
   );
