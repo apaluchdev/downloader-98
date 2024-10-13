@@ -20,9 +20,11 @@ const Files: React.FC<FilesProps> = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [files, setFiles] = useState<FileExtended[]>([]);
-  const [pin, setPIN] = useState<string>(Math.floor(10000 + Math.random() * 90000).toString()); // Random 5 digit PIN
+  const [pin, setPIN] = useState<string>(localStorage.getItem("pin") ?? Math.floor(10000 + Math.random() * 90000).toString()); // Random 5 digit PIN
   const pinRef = useRef<string | null>(null);
   const abortRef = useRef<(() => void) | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // QUERY
   async function onQueryFiles(pin: string): Promise<void> {
@@ -125,8 +127,22 @@ const Files: React.FC<FilesProps> = () => {
   useEffect(() => {
     console.log("PIN updated:", pin);
     pinRef.current = pin;
+    localStorage.setItem("pin", pin);
+    const params = new URLSearchParams(location.search);
+    params.set("pin", pin);
+    navigate({ search: params.toString() });
     onQueryFiles(pin);
-  }, [pin]);
+  }, [pin, navigate, location.search]);
+
+  // Initialize state from URL on load
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const initialPIN = params.get("pin");
+    if (initialPIN) {
+      setPIN(initialPIN);
+    }
+    pinRef.current = pin;
+  }, [location.search]);
 
   return (
     <div className="flex h-screen w-screen flex-col items-center gap-8 p-6">

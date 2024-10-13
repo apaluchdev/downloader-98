@@ -21,7 +21,7 @@ const PinWindow: React.FC<PinWindowProps> = ({ pin, setPIN }) => {
     <Window98 title="PIN" className="w-[200px]">
       <div className="window-body flex gap-2">
         <label htmlFor="pin">PIN</label>
-        <input className="w-16" id="pin" type="text" value={inputValue} onChange={handleChange} />
+        <input className="w-16 tracking-widest" id="pin" type="text" value={inputValue} onChange={handleChange} />
         <button onClick={handleSubmit}>Connect</button>
       </div>
     </Window98>
