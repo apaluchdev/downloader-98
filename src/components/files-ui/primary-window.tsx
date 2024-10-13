@@ -3,6 +3,7 @@ import React, { useCallback, useState } from "react";
 import { Button } from "../ui/button";
 import { useDropzone } from "react-dropzone";
 import Modal from "../ui/modal";
+import Window98 from "../ui/window98";
 
 type Props = {
   handleFileUpload: (files: File[]) => void;
@@ -23,43 +24,41 @@ const PrimaryWindow: React.FC<Props> = (props) => {
       maxSize: 50 * 1024 * 1024,
     });
 
-  return (
-    <div className="window h-full min-w-[180px]">
-      <div className="absolute flex">
-        <Modal isOpen={isAboutOpen} onClose={() => console.log("hi")}>
-          <div className="window h-full min-w-[180px]">
-            <div className="title-bar">
-              {/* TODO - Create an error window if no file is selected */}
-              <div className="title-bar-text">About</div>
-              <div className="title-bar-controls">
-                <button aria-label="Minimize" />
-                <button aria-label="Maximize" />
-                <button
-                  onClick={() => setIsAboutOpen(false)}
-                  aria-label="Close"
-                />
-              </div>
+  const AboutWindow: React.FC = () => {
+    if (!isAboutOpen) return null;
+    return (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Window98
+          open={isAboutOpen}
+          title="About"
+          onClose={() => setIsAboutOpen(false)}
+        >
+          <div className="window-body flex flex-col justify-between p-1">
+            <div className="mb-2 flex flex-row items-center">
+              <h4>Downloader98</h4>
+              <img
+                src="/file-icon.png"
+                alt="file icon"
+                className="ml-2 h-10 w-10"
+              />
             </div>
-            <div className="window-body flex h-[85%] flex-col justify-between p-4">
-              <p>
-                Easy file transfer between devices. Set a PIN and upload files.
-              </p>
-              <p>Download them on another device using the same PIN.</p>
-              <p>Files expire after 6 hours.</p>
-            </div>
+            <p>
+              Easy file transfer between devices. Set a PIN and upload files.
+            </p>
+            <p>Download them on another device using the same PIN.</p>
+            <p>Files expire after 6 hours.</p>
+            <p className="mt-2 font-bold">
+              Do not upload anything you would not want public!
+            </p>
           </div>
-        </Modal>
+        </Window98>
       </div>
+    );
+  };
 
-      <div className="title-bar">
-        {/* TODO - Create an error window if no file is selected */}
-        <div className="title-bar-text">File Menu</div>
-        <div className="title-bar-controls">
-          <button aria-label="Minimize" />
-          <button aria-label="Maximize" />
-          <button aria-label="Close" />
-        </div>
-      </div>
+  return (
+    <Window98 title="File Menu" className="h-full min-w-[180px]">
+      <AboutWindow />
       <div className="window-body flex h-[85%] flex-col justify-between gap-6 p-4">
         <div className="flex scale-110 flex-col gap-2 font-semibold">
           <button onClick={handleFileDownload} disabled={!props.isFileSelected}>
@@ -83,7 +82,7 @@ const PrimaryWindow: React.FC<Props> = (props) => {
           <button onClick={() => setIsAboutOpen(true)}>About</button>
         </div>
       </div>
-    </div>
+    </Window98>
   );
 };
 

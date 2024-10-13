@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import FileIcon from "./file-icon";
 import FileExtended from "@/lib/file-extended";
+import Window98 from "../ui/window98";
 
 type Props = {
   handleFileDownload: (filename: string) => void;
@@ -25,32 +26,23 @@ const FilesWindow: React.FC<Props> = (props) => {
 
   // Ensure the entire display area, including the FileDisplay component, is wrapped in getRootProps
   return (
-    <div className="window scroll-smooth md:max-w-[600px]">
-      <div className="title-bar mb-1">
-        <div className="title-bar-text">Files</div>
-        <div className="title-bar-controls">
-          <button aria-label="Minimize" />
-          <button aria-label="Maximize" />
-          <button aria-label="Close" />
-        </div>
-      </div>
+    <Window98 title="Files" className="scroll-smooth md:max-w-[600px]">
       <div
         {...getRootProps()} // Ensure this wraps the file display
         className={`!m-0.5 flex max-h-[260px] min-h-[220px] flex-wrap overflow-y-scroll bg-white p-4 md:min-h-[280px]`}
       >
         <div
           className={`m-2 flex w-full border-2 border-dashed border-gray-300 p-2 ${
-            isDragActive ? "border-blue-500 bg-blue-100" : ""
+            isDragActive && "border-blue-500 bg-blue-100"
           }`}
         >
           <FileDisplay {...props} /> {/* Pass necessary props */}
         </div>
       </div>
-    </div>
+    </Window98>
   );
 };
 
-// Child component remains as is, rendering the files
 const FileDisplay: React.FC<Props> = ({
   files,
   handleFileDownload,

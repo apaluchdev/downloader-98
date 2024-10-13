@@ -8,6 +8,7 @@ import Modal from "../ui/modal";
 import PrimaryWindow from "./primary-window";
 import FileExtended from "@/lib/file-extended";
 import TodoWindow from "./todo-window";
+import Window98 from "../ui/window98";
 
 interface FilesProps {
   // Define any props you need for the component here
@@ -138,24 +139,13 @@ const Files: React.FC<FilesProps> = () => {
 
   return (
     <div className="flex h-screen w-screen flex-col items-center gap-8 p-6">
-      <div className="window mb-8 hidden p-4 md:block">
-        <div className="title-bar mb-1">
-          <div className="title-bar-text">Welcome to</div>
-          <div className="title-bar-controls">
-            <button aria-label="Minimize" />
-            <button aria-label="Maximize" />
-            <button aria-label="Close" />
-          </div>
-        </div>
+      <Window98 title="Welcome to" className="mb-8 hidden p-4 md:block">
         <h1 className="p-4 text-6xl">Downloader98</h1>
-      </div>
+      </Window98>
       <h1 className="window w-32 scale-125 text-center text-xl font-semibold">
         Current PIN: {pin}
       </h1>
-      <div
-        id="container-primary"
-        className="flex w-3/4 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row"
-      >
+      <div className="flex w-3/4 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
         <div className="flex-2 flex flex-col gap-4">
           <div className="hidden md:block">
             <TodoWindow />

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Window98 from "../ui/window98";
 
 interface PinWindowProps {
   pin: string;
@@ -17,15 +18,7 @@ const PinWindow: React.FC<PinWindowProps> = ({ pin, setPIN }) => {
   };
 
   return (
-    <div className="window w-[200px]">
-      <div className="title-bar">
-        <div className="title-bar-text">PIN</div>
-        <div className="title-bar-controls">
-          <button aria-label="Minimize"></button>
-          <button aria-label="Maximize"></button>
-          <button aria-label="Close"></button>
-        </div>
-      </div>
+    <Window98 title="PIN" className="w-[200px]">
       <div className="window-body flex gap-2">
         <label htmlFor="pin">PIN</label>
         <input
@@ -37,7 +30,7 @@ const PinWindow: React.FC<PinWindowProps> = ({ pin, setPIN }) => {
         />
         <button onClick={handleSubmit}>Connect</button>
       </div>
-    </div>
+    </Window98>
   );
 };
 

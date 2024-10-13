@@ -1,3 +1,4 @@
+import Window98 from "../../../components/ui/window98";
 import React, { useState } from "react";
 
 interface FileProps {
@@ -21,15 +22,7 @@ const ProgressWindow: React.FC<FileProps> = ({
   };
 
   return (
-    <div className="window h-[200px] w-[400px]">
-      <div className="title-bar">
-        <div className="title-bar-text">{windowTitle}</div>
-        <div className="title-bar-controls">
-          <button aria-label="Minimize"></button>
-          <button aria-label="Maximize"></button>
-          <button onClick={onCancel} aria-label="Close"></button>
-        </div>
-      </div>
+    <Window98 title={windowTitle} className="h-[200px] w-[400px]">
       <div className="window-body flex flex-col gap-2">
         {progress < 100 && <img src="/file-copy.gif" className="w-64"></img>}
         {progress == 100 && (
@@ -55,7 +48,7 @@ const ProgressWindow: React.FC<FileProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </Window98>
   );
 };
 
