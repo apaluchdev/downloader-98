@@ -10,6 +10,7 @@ import FileExtended from "@/lib/file-extended";
 import TodoWindow from "./todo-window";
 import Window98 from "../ui/window98";
 import { useNavigate, useLocation } from "react-router-dom";
+import GetPinExpiry from "../../lib/pin-helper";
 
 interface FilesProps {
   // Define any props you need for the component here
@@ -21,6 +22,7 @@ const Files: React.FC<FilesProps> = () => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [files, setFiles] = useState<FileExtended[]>([]);
   const [pin, setPIN] = useState<string>(localStorage.getItem("pin") ?? Math.floor(10000 + Math.random() * 90000).toString()); // Random 5 digit PIN
+  const [pinExpiry, setPINExpiry] = useState<Date | undefined>(undefined);
   const pinRef = useRef<string | null>(null);
   const abortRef = useRef<(() => void) | null>(null);
   const navigate = useNavigate();
@@ -52,6 +54,7 @@ const Files: React.FC<FilesProps> = () => {
         file.IsClicked = false;
       });
 
+      setPINExpiry(await GetPinExpiry(pin));
       setIsQueryingFiles(false);
       setFiles(fileArray);
     } catch (error) {
@@ -151,7 +154,7 @@ const Files: React.FC<FilesProps> = () => {
       </Window98>
       <h1 className="window flex flex-col !p-2 text-center font-semibold">
         <p className="text-lg">Current PIN: {pin}</p>
-        <p>Expires: 22 Hours</p>
+        <p>Expires: {pinExpiry && pinExpiry.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
       </h1>
       <div className="flex w-3/4 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
         <div className="flex-2 flex flex-col gap-4">

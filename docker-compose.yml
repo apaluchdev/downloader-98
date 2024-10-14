@@ -26,6 +26,8 @@ services:
       - "8080:8080"
     networks:
       - react-network
+    # environment:
+    #   - AZURITE_CONNECTION_STRING=
 
 volumes:
   azurite_data:
