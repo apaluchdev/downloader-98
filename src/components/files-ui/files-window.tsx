@@ -48,7 +48,7 @@ const FileDisplay: React.FC<Props> = ({ files, handleFileDownload, handleFileCli
   }
 
   if (files.length < 1) {
-    return <h4 className="flex w-full items-center justify-center text-gray-400">Drag and drop files</h4>;
+    return <h4 className="flex w-full items-center justify-center text-center text-gray-400">Drag and drop files</h4>;
   }
 
   return (
