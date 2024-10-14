@@ -33,10 +33,15 @@ const Files: React.FC<FilesProps> = () => {
     try {
       setIsQueryingFiles(true);
       console.log("Querying files for pin:", pin);
+
       const response = await fetch(`${process.env.REACT_APP_API_DOMAIN}/file/query/${pin}`); // TODO make this domain an env variable
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
+
+      // Force users to enjoy the windows 98 animation
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       const data = await response.json();
 
       if (!data.blobs) {
@@ -154,7 +159,7 @@ const Files: React.FC<FilesProps> = () => {
       </Window98>
       <h1 className="window flex flex-col !p-2 text-center font-semibold">
         <p className="text-lg">Current PIN: {pin}</p>
-        <p>Expires: {pinExpiry && pinExpiry.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+        {pinExpiry && <p>Expires: {pinExpiry.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>}
       </h1>
       <div className="flex w-3/4 max-w-4xl flex-col items-center justify-center gap-4 md:flex-row">
         <div className="flex-2 flex flex-col gap-4">
