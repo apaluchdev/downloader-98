@@ -19,6 +19,8 @@
 body {
   margin: 0;
   min-width: 320px;
+  /* Teal Windows 98-era background */
+  background: rgb(0, 128, 128);
 }
 
 /* Avoid global h1/button overrides; use component/local classes */
