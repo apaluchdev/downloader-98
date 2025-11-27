@@ -1,0 +1,206 @@
+.winamp-player {
+  width: 275px;
+  user-select: none;
+  background: linear-gradient(to bottom, #3c3c3c 0%, #2a2a2a 100%);
+  font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+}
+
+.winamp-title {
+  background: linear-gradient(to right, #0a0a0a, #1a1a1a);
+  border-bottom: 1px solid #4a4a4a;
+}
+
+.winamp-title-text {
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.winamp-body {
+  padding: 8px;
+  background: #000000;
+  border: 2px solid #2a2a2a;
+}
+
+/* Display */
+.winamp-display {
+  background: #000000;
+  border: 2px inset #333333;
+  padding: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.winamp-time {
+  font-family: "Courier New", monospace;
+  font-size: 16px;
+  color: #00ff00;
+  font-weight: bold;
+  min-width: 60px;
+  text-shadow: 0 0 4px #00ff00;
+}
+
+.winamp-track-info {
+  font-size: 10px;
+  color: #00ff00;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Visualizer */
+.winamp-visualizer {
+  background: #000000;
+  border: 2px inset #333333;
+  padding: 4px;
+  margin-bottom: 8px;
+  height: 40px;
+}
+
+.visualizer-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 100%;
+}
+
+.visualizer-bar {
+  flex: 1;
+  background: linear-gradient(to top, #00ff00, #00aa00);
+  min-height: 2px;
+  border-radius: 1px;
+}
+
+/* Seek bar */
+.winamp-seekbar {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.seekbar-slider {
+  flex: 1;
+  height: 4px;
+  background: #1a1a1a;
+  border: 1px inset #333333;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.seekbar-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 12px;
+  background: #666666;
+  border: 1px outset #888888;
+  cursor: pointer;
+}
+
+.seekbar-slider::-moz-range-thumb {
+  width: 10px;
+  height: 12px;
+  background: #666666;
+  border: 1px outset #888888;
+  cursor: pointer;
+}
+
+.seekbar-time {
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  color: #00ff00;
+  min-width: 40px;
+}
+
+/* Controls */
+.winamp-controls {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.winamp-btn {
+  width: 40px;
+  height: 32px;
+  background: linear-gradient(to bottom, #4a4a4a, #2a2a2a);
+  border: 2px outset #666666;
+  color: #00ff00;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s;
+}
+
+.winamp-btn:hover {
+  background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
+}
+
+.winamp-btn:active {
+  border-style: inset;
+  background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+}
+
+.winamp-btn-play {
+  width: 50px;
+  font-size: 18px;
+}
+
+/* Volume */
+.winamp-volume {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  background: #1a1a1a;
+  border: 1px solid #333333;
+}
+
+.winamp-volume label {
+  font-size: 10px;
+  color: #00ff00;
+  font-weight: bold;
+}
+
+.volume-slider {
+  flex: 1;
+  height: 4px;
+  background: #0a0a0a;
+  border: 1px inset #333333;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 10px;
+  background: #00ff00;
+  border: 1px solid #00aa00;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 8px;
+  height: 10px;
+  background: #00ff00;
+  border: 1px solid #00aa00;
+  cursor: pointer;
+}
+
+.volume-value {
+  font-size: 10px;
+  color: #00ff00;
+  min-width: 24px;
+  text-align: right;
+  font-family: "Courier New", monospace;
+}

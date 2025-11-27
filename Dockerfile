@@ -1,27 +1,33 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine
+# Multi-stage build: build static assets with Vite, serve with Nginx
 
-ENV REACT_APP_API_DOMAIN=https://gozurite.apaluchdev.com
-#ENV REACT_APP_API_DOMAIN=http://localhost:8080
-
-# Set working directory
+# --- Build stage ---
+FROM node:20-alpine AS build
 WORKDIR /app
 
-# Copy package.json and install dependencies
-COPY package*.json ./
-RUN npm install
+# Install dependencies first (better layer caching)
+COPY package.json package-lock.json* ./
+RUN npm ci --no-audit --no-fund
 
-# Copy the rest of the application code
+# Copy source
 COPY . .
 
-# Build the React app
+# Build for production
 RUN npm run build
 
-# Install a simple web server
-RUN npm install -g serve
+# --- Runtime stage ---
+FROM nginx:alpine AS runtime
 
-# Command to run the app
-CMD ["serve", "-s", "build"]
+# Create a mount point for persistent storage
+# (Your container runtime can bind mount a host path here)
+RUN mkdir -p /data
+VOLUME ["/data"]
 
-# Expose the port the app runs on
-EXPOSE 3000
+# Copy built assets to Nginx html directory
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Optional: custom default index could read/write /data via client-side JS APIs
+# Expose port 80
+EXPOSE 80
+
+# Nginx will default to serving /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]

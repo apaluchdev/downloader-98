@@ -1,0 +1,106 @@
+.file-explorer-window {
+  width: 600px;
+  user-select: none;
+}
+
+.file-explorer-body {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+}
+
+.file-drop-zone {
+  flex: 1;
+  background: white;
+  padding: 16px;
+  overflow-y: auto;
+  border: 2px inset;
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+  margin: 2px;
+  min-height: 300px;
+  transition: background-color 0.2s;
+}
+
+.file-drop-zone.dragging {
+  background: #e0e0e0;
+  border-color: #0000ff #0000ff #0000ff #0000ff;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #808080;
+  font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+  font-size: 12px;
+}
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 16px;
+  padding: 8px;
+}
+
+.file-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.file-item:hover {
+  background: #000080;
+  color: white;
+  border: 1px dotted #ffffff;
+}
+
+.file-item.selected {
+  background: #000080;
+  color: white;
+  border: 1px dotted #ffffff;
+}
+
+.file-icon {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.file-name {
+  font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  text-align: center;
+  word-wrap: break-word;
+  max-width: 80px;
+  line-height: 1.2;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-bar-delete-btn {
+  padding: 2px 12px;
+  font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  background: #c0c0c0;
+  border: 2px outset #dfdfdf;
+  cursor: pointer;
+}
+
+.status-bar-delete-btn:active:not(:disabled) {
+  border-style: inset;
+}
+
+.status-bar-delete-btn:disabled {
+  color: #808080;
+  cursor: default;
+}

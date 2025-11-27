@@ -1,0 +1,62 @@
+/* Windows 98 Taskbar */
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  z-index: 10000;
+  box-shadow: inset 0 1px 0 #dfdfdf;
+}
+
+.taskbar-start {
+  padding: 0px 0px;
+  margin: 0px;
+  height: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.taskbar-start:active {
+  border-style: inset;
+  border-color: #000000 #ffffff #ffffff #000000;
+  padding: 3px 5px 1px 7px;
+}
+
+.start-button-img {
+  height: 24px;
+  width: 72px;
+  display: block;
+}
+
+.taskbar-tasks {
+  flex: 1;
+  height: 22px;
+  border: 1px solid;
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+  background: #c0c0c0;
+  margin-right: 4px;
+}
+
+.taskbar-tray {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid;
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+  background: #c0c0c0;
+}
+
+.taskbar-time {
+  font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  user-select: none;
+}
