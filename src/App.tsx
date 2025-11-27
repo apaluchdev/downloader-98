@@ -1,49 +1,47 @@
 import { useState } from "react";
 import "./App.css";
+import { Taskbar } from "./components/Taskbar";
+import { DownloadWindow } from "./components/DownloadWindow";
+import { FileExplorer } from "./components/FileExplorer";
+import { RecycleBinIcon } from "./components/RecycleBinIcon";
+// import { WinampPlayer } from "./components/WinampPlayer";
+
+interface FileItem {
+  name: string;
+  id: string;
+}
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [files, setFiles] = useState<FileItem[]>([]);
+  const [isDownloadWindowVisible, setIsDownloadWindowVisible] = useState(true);
+  const [isFileExplorerVisible, setIsFileExplorerVisible] = useState(true);
+  // const [isWinampVisible, setIsWinampVisible] = useState(true);
+
+  const handleFileAdd = (file: File) => {
+    const newFile: FileItem = {
+      name: file.name,
+      id: `${Date.now()}-${Math.random()}`,
+    };
+    setFiles((prev) => [...prev, newFile]);
+  };
+
+  const handleFileDelete = (id: string) => {
+    setFiles((prev) => prev.filter((file) => file.id !== id));
+  };
 
   return (
-    <>
-      {/* Windows 98 style window using 98.css */}
-      <div className="window" style={{ maxWidth: 480, margin: "0 auto" }}>
-        <div className="title-bar">
-          <div className="title-bar-text">Downloader 98</div>
-          <div className="title-bar-controls">
-            <button aria-label="Minimize"></button>
-            <button aria-label="Maximize"></button>
-            <button aria-label="Close"></button>
-          </div>
-        </div>
-        <div className="window-body">
-          <div className="field-row" style={{ justifyContent: "space-between" }}>
-            <span>Welcome to the 98-style window!</span>
-            <div className="status-bar" style={{ minWidth: 160 }}>
-              <p className="status-bar-field">Ready</p>
-            </div>
-          </div>
-
-          <hr />
-
-          <div className="field-row-stacked">
-            <label htmlFor="url">URL</label>
-            <input id="url" className="" type="text" placeholder="https://example.com/file.zip" />
-          </div>
-
-          <div className="field-row" style={{ marginTop: 8 }}>
-            <button>Browse...</button>
-            <button onClick={() => setCount((c) => c + 1)}>Download ({count})</button>
-          </div>
-
-          <div className="status-bar" style={{ marginTop: 12 }}>
-            <p className="status-bar-field">Speed: 0 KB/s</p>
-            <p className="status-bar-field">Progress: 0%</p>
-            <p className="status-bar-field">Queue: 0</p>
-          </div>
-        </div>
+    <div className="w-full">
+      <div className="desktop" style={{ position: "relative", width: "100%", height: "100vh" }}>
+        <RecycleBinIcon name="Recycle Bin" imageSrc="/recycle_bin_full-2.png" onDoubleClick={() => alert("Recycle Bin opened!")} />
+        {/* Bonzi GIF at top right */}
+        <img src="/bonzi.gif" alt="Bonzi GIF" style={{ position: "absolute", top: 12, right: 12, width: 100, height: "auto", zIndex: 100 }} />
       </div>
-    </>
+      <DownloadWindow onFileAdd={handleFileAdd} onClose={() => setIsDownloadWindowVisible(false)} isVisible={isDownloadWindowVisible} />
+      <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onClose={() => setIsFileExplorerVisible(false)} isVisible={isFileExplorerVisible} />
+      {/* <WinampPlayer src="/music/chevrolet.mp3" onClose={() => setIsWinampVisible(false)} isVisible={isWinampVisible} /> */}
+      {/* <ProgressWindow windowTitle="Upload Progress" progress={50} onCancel={() => {}} onDone={() => {}} /> */}
+      <Taskbar />
+    </div>
   );
 }
 

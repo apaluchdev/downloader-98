@@ -1,0 +1,15 @@
+.download-window {
+  width: 480px;
+  user-select: none;
+}
+
+.modal-window {
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  user-select: none;
+}
+
+.download-window .pin-input {
+  max-width: 120px;
+  width: 100%;
+  box-sizing: border-box;
+}

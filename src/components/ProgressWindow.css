@@ -1,0 +1,22 @@
+.progress-window {
+  width: 360px;
+  user-select: none;
+}
+
+.progress-window-body {
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.progress-window-body img {
+  align-self: center;
+}
+
+.progress-window .tree-view {
+  border: 2px inset #c0c0c0;
+  padding: 6px;
+  background: var(--win-98);
+}
