@@ -123,10 +123,10 @@ function App() {
             </h1>
           </div>
         )}
+        <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={handleDownloadWindowClose} isVisible={isDownloadWindowVisible} isMobile={isMobile} />
+        <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} activePin={activePin} onClose={handleFileExplorerClose} isVisible={isFileExplorerVisible} isMobile={isMobile} />
+        {!isMobile && <WebampPlayer onClose={handleWebampClose} isVisible={isWebampVisible} />}
       </div>
-      <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={handleDownloadWindowClose} isVisible={isDownloadWindowVisible} isMobile={isMobile} />
-      <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} activePin={activePin} onClose={handleFileExplorerClose} isVisible={isFileExplorerVisible} isMobile={isMobile} />
-      {!isMobile && <WebampPlayer onClose={handleWebampClose} isVisible={isWebampVisible} />}
       {!isMobile && <Taskbar />}
     </div>
   );
