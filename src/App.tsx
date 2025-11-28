@@ -18,7 +18,7 @@ function App() {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [isDownloadWindowVisible, setIsDownloadWindowVisible] = useState(true);
   const [isFileExplorerVisible, setIsFileExplorerVisible] = useState(true);
-  const [currentPin, setCurrentPin] = useState<string>("");
+  const [activePin, setActivePin] = useState<string>("");
   // const [isWinampVisible, setIsWinampVisible] = useState(true);
 
   const handleFileAdd = (file: File, isSynced = false) => {
@@ -44,7 +44,7 @@ function App() {
   };
 
   const handlePinChange = (newPin: string) => {
-    setCurrentPin(newPin);
+    setActivePin(newPin);
     // Clear files when PIN is changed
     setFiles([]);
   };
@@ -55,14 +55,14 @@ function App() {
       return;
     }
 
-    if (!currentPin) {
+    if (!activePin) {
       alert("No PIN set. Please query files first.");
       return;
     }
 
     try {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-      const response = await fetch(`${API_BASE_URL}/api/files/${currentPin}/${fileItem.name}`);
+      const response = await fetch(`${API_BASE_URL}/api/files/${activePin}/${fileItem.name}`);
 
       if (!response.ok) {
         throw new Error(`Download failed: ${response.statusText}`);
@@ -89,13 +89,13 @@ function App() {
         <RecycleBinIcon name="Recycle Bin" imageSrc="/recycle_bin_full-2.png" onDoubleClick={() => alert("Recycle Bin opened!")} />
         {/* Bonzi GIF at top right */}
         <img src="/bonzi.gif" alt="Bonzi GIF" style={{ position: "absolute", top: 12, right: 12, width: 100, height: "auto", zIndex: 100 }} />
-        {currentPin && (
+        {activePin && (
           <h1 className="window text-center font-semibold w-xs m-auto display-block">
-            <p className="text-lg">Current PIN: {currentPin}</p>
+            <p className="text-lg">Current PIN: {activePin}</p>
           </h1>
         )}
       </div>
-      <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} currentPin={currentPin} onPinChange={handlePinChange} onClose={() => setIsDownloadWindowVisible(false)} isVisible={isDownloadWindowVisible} />
+      <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={() => setIsDownloadWindowVisible(false)} isVisible={isDownloadWindowVisible} />
       <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} onClose={() => setIsFileExplorerVisible(false)} isVisible={isFileExplorerVisible} />
       {/* <WinampPlayer src="/music/chevrolet.mp3" onClose={() => setIsWinampVisible(false)} isVisible={isWinampVisible} /> */}
       {/* <ProgressWindow windowTitle="Upload Progress" progress={50} onCancel={() => {}} onDone={() => {}} /> */}

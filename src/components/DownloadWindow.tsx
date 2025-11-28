@@ -13,8 +13,8 @@ interface FileItem {
 interface DownloadWindowProps {
   onFileSync?: (id: string) => void;
   onSetFiles?: (files: FileItem[]) => void;
-  currentPin?: string;
-  onPinChange?: (pin: string) => void;
+  activePin?: string;
+  onActivePinChange?: (pin: string) => void;
   onClose?: () => void;
   isVisible?: boolean;
   files?: FileItem[];
@@ -22,15 +22,17 @@ interface DownloadWindowProps {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinChange, onClose, isVisible = true, files = [] }: DownloadWindowProps) {
+export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActivePinChange, onClose, isVisible = true, files = [] }: DownloadWindowProps) {
   const count = files.length;
+  const [inputPin, setInputPin] = useState("");
   const [progress, setProgress] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("Pin must be 6 digits or longer!");
   const [isUploading, setIsUploading] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
 
   // Pin must be 6-8 digits
-  const isPinValid = /^\d{6,8}$/.test(currentPin);
+  const isPinValid = /^\d{6,8}$/.test(inputPin);
 
   const percentage = Math.min(Math.max(progress, 0), 100);
   const loadingSquareCount = Array.from({ length: Math.ceil((percentage / 100) * 28) });
@@ -40,7 +42,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinC
   };
 
   const validatePin = () => {
-    if (currentPin.length < 6) {
+    if (inputPin.length < 6) {
       setModalMessage("Pin must be 6 digits or longer!");
       setShowModal(true);
       return false;
@@ -60,7 +62,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinC
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch(`${API_BASE_URL}/api/files/${currentPin}`, {
+      const response = await fetch(`${API_BASE_URL}/api/files/${activePin}`, {
         method: "POST",
         body: formData,
       });
@@ -101,7 +103,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinC
     setProgress(0);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/files/${currentPin}`, {
+      const response = await fetch(`${API_BASE_URL}/api/files/${inputPin}`, {
         method: "GET",
       });
 
@@ -130,6 +132,11 @@ export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinC
 
       if (onSetFiles) {
         onSetFiles(allFiles);
+      }
+
+      // Set the active PIN after successful query
+      if (onActivePinChange) {
+        onActivePinChange(inputPin);
       }
 
       setProgress(100);
@@ -185,12 +192,12 @@ export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinC
       <div className="window-body">
         <div className="field-row-stacked">
           <label htmlFor="pin">PIN</label>
-          <input id="pin" className="pin-input" type="text" placeholder="Enter 6-digit pin" value={currentPin} onChange={(e) => onPinChange?.(e.target.value)} />
+          <input id="pin" className="pin-input" type="text" placeholder="Enter 6-digit pin" value={inputPin} onChange={(e) => setInputPin(e.target.value)} />
         </div>
 
         <div className="field-row" style={{ marginTop: 8, gap: 8 }}>
           <button onClick={handleQuery} disabled={!isPinValid}>
-            Query
+            Set PIN
           </button>
           <button onClick={handleDownload} disabled={!isPinValid}>
             Download ({count})
@@ -198,6 +205,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinC
           <button onClick={handleUpload} disabled={!isPinValid || isUploading}>
             {isUploading ? "Uploading..." : "Upload"}
           </button>
+          <button onClick={() => setShowAboutModal(true)}>About</button>
         </div>
 
         <div className="status-bar" style={{ marginTop: 12 }}>
@@ -237,6 +245,38 @@ export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinC
             <p style={{ marginBottom: 16 }}>{modalMessage}</p>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button onClick={() => setShowModal(false)}>OK</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAboutModal && (
+        <div
+          className="window modal-window"
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "350px",
+            zIndex: 1000,
+          }}
+        >
+          <div className="title-bar">
+            <div className="title-bar-text">About Downloader 98</div>
+            <div className="title-bar-controls">
+              <button aria-label="Close" onClick={() => setShowAboutModal(false)}></button>
+            </div>
+          </div>
+          <div className="window-body">
+            <p style={{ marginBottom: 12, fontWeight: "bold" }}>Downloader 98</p>
+            <p style={{ marginBottom: 12 }}>
+              Enter a PIN to upload and download files. <br />
+              Query the server for a specific PIN to see available files, upload local files, and download them. Files associated with a PIN are expired after a week.
+            </p>
+            <p style={{ marginBottom: 16, fontSize: "1em", color: "#666" }}>Files are synced to the server and accessible from anywhere using your PIN.</p>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button onClick={() => setShowAboutModal(false)}>OK</button>
             </div>
           </div>
         </div>
