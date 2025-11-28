@@ -2,51 +2,181 @@ import { useState } from "react";
 import "./DownloadWindow.css";
 import { Window98 } from "./Window98";
 
-interface DownloadWindowProps {
-  onFileAdd?: (file: File) => void;
-  onClose?: () => void;
-  isVisible?: boolean;
+interface FileItem {
+  name: string;
+  id: string;
+  file: File;
+  isSynced: boolean;
+  size?: number; // Actual size from server, overrides file.size for synced files
 }
 
-export function DownloadWindow({ onFileAdd, onClose, isVisible = true }: DownloadWindowProps) {
-  const [count] = useState(0);
-  const [progress] = useState(25);
-  const [pin, setPin] = useState("");
+interface DownloadWindowProps {
+  onFileSync?: (id: string) => void;
+  onSetFiles?: (files: FileItem[]) => void;
+  currentPin?: string;
+  onPinChange?: (pin: string) => void;
+  onClose?: () => void;
+  isVisible?: boolean;
+  files?: FileItem[];
+}
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export function DownloadWindow({ onFileSync, onSetFiles, currentPin = "", onPinChange, onClose, isVisible = true, files = [] }: DownloadWindowProps) {
+  const count = files.length;
+  const [progress, setProgress] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("Pin must be 6 digits or longer!");
+  const [isUploading, setIsUploading] = useState(false);
 
   // Pin must be 6-8 digits
-  const isPinValid = /^\d{6,8}$/.test(pin);
+  const isPinValid = /^\d{6,8}$/.test(currentPin);
 
   const percentage = Math.min(Math.max(progress, 0), 100);
-  const loadingSquareCount = Array.from({ length: Math.ceil((percentage / 100) * 23) });
+  const loadingSquareCount = Array.from({ length: Math.ceil((percentage / 100) * 28) });
 
   const BlueSquare = () => {
     return <div className="h-4 w-3 bg-blue-800" />;
   };
 
   const validatePin = () => {
-    if (pin.length < 6) {
+    if (currentPin.length < 6) {
+      setModalMessage("Pin must be 6 digits or longer!");
       setShowModal(true);
       return false;
     }
     return true;
   };
 
-  const handleQuery = () => {};
+  const uploadFileToAPI = async (file: File) => {
+    if (!validatePin()) {
+      return;
+    }
+
+    setIsUploading(true);
+    setProgress(0);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(`${API_BASE_URL}/api/files/${currentPin}`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log("Upload successful:", result);
+
+      setProgress(100);
+      setModalMessage(`File "${file.name}" uploaded successfully!`);
+      setShowModal(true);
+
+      // Reset progress after a short delay
+      setTimeout(() => {
+        setProgress(0);
+      }, 1500);
+
+      return true;
+    } catch (error) {
+      console.error("Upload error:", error);
+      setModalMessage(`Upload failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+      setShowModal(true);
+      setProgress(0);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleQuery = async () => {
+    if (!validatePin()) {
+      return;
+    }
+
+    setIsUploading(true);
+    setProgress(0);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/files/${currentPin}`, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Query failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Files from API:", data);
+
+      // Handle the API response format: { files: [{ name, size }, ...] }
+      const fileObjects = data.files || [];
+
+      // Create placeholder File objects for the files on the server
+      const serverFiles: FileItem[] = fileObjects.map((fileObj: { name: string; size: number }) => ({
+        name: fileObj.name,
+        id: `server-${Date.now()}-${Math.random()}`,
+        file: new File([], fileObj.name, { type: "application/octet-stream" }),
+        isSynced: true,
+        size: fileObj.size,
+      }));
+
+      // Merge with existing local files that are not synced
+      const localUnsyncedFiles = files.filter((f) => !f.isSynced);
+      const allFiles = [...serverFiles, ...localUnsyncedFiles];
+
+      if (onSetFiles) {
+        onSetFiles(allFiles);
+      }
+
+      setProgress(100);
+      setModalMessage(`Found ${fileObjects.length} file(s) on server.`);
+      setShowModal(true);
+
+      setTimeout(() => {
+        setProgress(0);
+      }, 1500);
+    } catch (error) {
+      console.error("Query error:", error);
+      setModalMessage(`Query failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+      setShowModal(true);
+      setProgress(0);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleDownload = () => {};
 
-  const handleUpload = () => {
-    if (validatePin() && onFileAdd) {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.onchange = (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) {
-          onFileAdd(file);
-        }
-      };
-      input.click();
+  const handleUpload = async () => {
+    if (!validatePin()) {
+      return;
+    }
+
+    const unsyncedFiles = files.filter((f) => !f.isSynced);
+
+    if (unsyncedFiles.length === 0) {
+      setModalMessage("No unsynced files to upload!");
+      setShowModal(true);
+      return;
+    }
+
+    // Upload all unsynced files from the FileExplorer
+    let uploadedCount = 0;
+    for (const fileItem of unsyncedFiles) {
+      const success = await uploadFileToAPI(fileItem.file);
+      if (success && onFileSync) {
+        onFileSync(fileItem.id);
+        uploadedCount++;
+      }
+    }
+
+    if (uploadedCount > 0) {
+      setModalMessage(`Successfully uploaded ${uploadedCount} file(s)!`);
+      setShowModal(true);
     }
   };
 
@@ -55,7 +185,7 @@ export function DownloadWindow({ onFileAdd, onClose, isVisible = true }: Downloa
       <div className="window-body">
         <div className="field-row-stacked">
           <label htmlFor="pin">PIN</label>
-          <input id="pin" className="pin-input" type="text" placeholder="Enter 6-digit pin" value={pin} onChange={(e) => setPin(e.target.value)} />
+          <input id="pin" className="pin-input" type="text" placeholder="Enter 6-digit pin" value={currentPin} onChange={(e) => onPinChange?.(e.target.value)} />
         </div>
 
         <div className="field-row" style={{ marginTop: 8, gap: 8 }}>
@@ -65,13 +195,13 @@ export function DownloadWindow({ onFileAdd, onClose, isVisible = true }: Downloa
           <button onClick={handleDownload} disabled={!isPinValid}>
             Download ({count})
           </button>
-          <button onClick={handleUpload} disabled={!isPinValid}>
-            Upload
+          <button onClick={handleUpload} disabled={!isPinValid || isUploading}>
+            {isUploading ? "Uploading..." : "Upload"}
           </button>
         </div>
 
         <div className="status-bar" style={{ marginTop: 12 }}>
-          <p className="status-bar-field">Speed: 0 KB/s</p>
+          <p className="status-bar-field">{isUploading ? `Uploading: ${percentage}%` : `Speed: 0 KB/s`}</p>
         </div>
 
         <div style={{ marginTop: 8 }}>
@@ -104,7 +234,7 @@ export function DownloadWindow({ onFileAdd, onClose, isVisible = true }: Downloa
             </div>
           </div>
           <div className="window-body">
-            <p style={{ marginBottom: 16 }}>Pin must be 6 digits or longer!</p>
+            <p style={{ marginBottom: 16 }}>{modalMessage}</p>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button onClick={() => setShowModal(false)}>OK</button>
             </div>

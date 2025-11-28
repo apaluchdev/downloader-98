@@ -5,17 +5,21 @@ import { Window98 } from "./Window98";
 interface FileItem {
   name: string;
   id: string;
+  file: File;
+  isSynced: boolean;
+  size?: number; // Actual size from server, overrides file.size for synced files
 }
 
 interface FileExplorerProps {
   onFileAdd?: (file: File) => void;
   onFileDelete?: (id: string) => void;
+  onFileDownload?: (file: FileItem) => void;
   files: FileItem[];
   onClose?: () => void;
   isVisible?: boolean;
 }
 
-export function FileExplorer({ onFileAdd, onFileDelete, files, onClose, isVisible = true }: FileExplorerProps) {
+export function FileExplorer({ onFileAdd, onFileDelete, onFileDownload, files, onClose, isVisible = true }: FileExplorerProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const dropZoneRef = useRef<HTMLDivElement>(null);
@@ -71,6 +75,24 @@ export function FileExplorer({ onFileAdd, onFileDelete, files, onClose, isVisibl
     }
   };
 
+  const handleDoubleClick = (fileItem: FileItem) => {
+    if (onFileDownload) {
+      onFileDownload(fileItem);
+    }
+  };
+
+  const getSelectedFile = () => {
+    return files.find((f) => f.id === selectedFileId);
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+  };
+
   const getFileIconSrc = (fileName: string) => {
     const ext = fileName.split(".").pop()?.toLowerCase();
     switch (ext) {
@@ -111,7 +133,7 @@ export function FileExplorer({ onFileAdd, onFileDelete, files, onClose, isVisibl
           ) : (
             <div className="file-grid">
               {files.map((file) => (
-                <div key={file.id} className={`file-item ${selectedFileId === file.id ? "selected" : ""}`} onClick={() => setSelectedFileId(file.id)}>
+                <div key={file.id} className={`file-item ${selectedFileId === file.id ? "selected" : ""}`} onClick={() => setSelectedFileId(file.id)} onDoubleClick={() => handleDoubleClick(file)} style={{ opacity: file.isSynced ? 1 : 0.5 }}>
                   <div className="file-icon">
                     <img
                       src={getFileIconSrc(file.name)}
@@ -130,6 +152,7 @@ export function FileExplorer({ onFileAdd, onFileDelete, files, onClose, isVisibl
         </div>
         <div className="status-bar">
           <p className="status-bar-field">{files.length} file(s)</p>
+          {selectedFileId && getSelectedFile() && <p className="status-bar-field">{formatFileSize(getSelectedFile()!.size || getSelectedFile()!.file.size)}</p>}
           <button className="status-bar-delete-btn" onClick={handleBrowseClick}>
             Browse
           </button>
