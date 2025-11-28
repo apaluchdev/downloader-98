@@ -29,7 +29,7 @@ export function Window98({ title, children, initialX = 100, initialY = 100, widt
   return (
     <div
       ref={dragRef}
-      className={`window window98 ${className} ${isMobile ? 'mobile-window' : ''}`}
+      className={`window window98 ${className} ${isMobile ? "mobile-window" : ""}`}
       style={{
         position: isMobile ? "relative" : "absolute",
         left: isMobile ? "auto" : `${position.x}px`,

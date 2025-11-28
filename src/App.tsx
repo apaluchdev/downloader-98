@@ -28,10 +28,10 @@ function App() {
       const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
       setIsMobile(mobile);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const handleFileAdd = (file: File, isSynced = false) => {
@@ -111,13 +111,13 @@ function App() {
   }, []);
 
   return (
-    <div className={`w-full ${isMobile ? 'mobile-layout' : ''}`} style={{ height: "100vh", overflow: isMobile ? "auto" : "hidden" }}>
+    <div className={`w-full ${isMobile ? "mobile-layout" : ""}`} style={{ height: "100vh", overflow: isMobile ? "auto" : "hidden" }}>
       <div className="desktop" style={{ position: "relative", width: "100%", height: isMobile ? "auto" : "100vh", minHeight: isMobile ? "100vh" : "auto" }}>
         {!isMobile && <RecycleBinIcon name="Recycle Bin" imageSrc="/recycle_bin_full-2.png" onDoubleClick={() => alert("Recycle Bin opened!")} />}
         {/* Bonzi GIF at top right */}
         {!isMobile && <img src="/bonzi.gif" alt="Bonzi GIF" style={{ position: "fixed", top: 8, right: 8, width: 100, height: "auto", zIndex: 0 }} />}
         {activePin && (
-          <div className={`current-pin-display ${isMobile ? 'mobile-pin' : ''}`}>
+          <div className={`current-pin-display ${isMobile ? "mobile-pin" : ""}`}>
             <h1 className="window text-center font-semibold w-xs m-auto display-block">
               <p className="text-lg">Current PIN: {activePin}</p>
             </h1>

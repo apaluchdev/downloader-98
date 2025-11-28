@@ -190,7 +190,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
   };
 
   return (
-    <Window98 title="Downloader 98" onClose={onClose} initialX={isMobile ? 10 : 50} initialY={isMobile ? 80 : 200} width={isMobile ? 'calc(100vw - 20px)' : 480} className="download-window" isVisible={isVisible} isMobile={isMobile}>
+    <Window98 title="Downloader 98" onClose={onClose} initialX={isMobile ? 10 : 50} initialY={isMobile ? 80 : 200} width={isMobile ? "calc(100vw - 20px)" : 480} className="download-window" isVisible={isVisible} isMobile={isMobile}>
       <div className="window-body">
         <div className="field-row-stacked">
           <label htmlFor="pin">PIN</label>
