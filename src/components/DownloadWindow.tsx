@@ -232,9 +232,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
         </div>
 
         <div className="status-bar" style={{ marginTop: 12 }}>
-          <p className="status-bar-field">
-            {isUploading ? `Uploading "${uploadingFileName}": ${Math.round(percentage)}%` : `Speed: 0 KB/s`}
-          </p>
+          <p className="status-bar-field">{isUploading ? `Uploading "${uploadingFileName}": ${Math.round(percentage)}%` : `Speed: 0 KB/s`}</p>
         </div>
 
         <div style={{ marginTop: 8 }}>
@@ -244,11 +242,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
                 <BlueSquare key={index} />
               ))}
             </div>
-            {isUploading && percentage < 5 && (
-              <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: "11px", color: "#000" }}>
-                Loading...
-              </div>
-            )}
+            {isUploading && percentage < 5 && <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: "11px", color: "#000" }}>Loading...</div>}
           </ul>
         </div>
       </div>
