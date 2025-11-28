@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import "./App.css";
 import { Taskbar } from "./components/Taskbar";
 import { DownloadWindow } from "./components/DownloadWindow";
@@ -85,6 +85,18 @@ function App() {
     }
   };
 
+  const handleDownloadWindowClose = useCallback(() => {
+    setIsDownloadWindowVisible(false);
+  }, []);
+
+  const handleFileExplorerClose = useCallback(() => {
+    setIsFileExplorerVisible(false);
+  }, []);
+
+  const handleWebampClose = useCallback(() => {
+    setIsWebampVisible(false);
+  }, []);
+
   return (
     <div className="w-full" style={{ height: "100vh", overflow: "hidden" }}>
       <div className="desktop" style={{ position: "relative", width: "100%", height: "100vh" }}>
@@ -97,9 +109,9 @@ function App() {
           </h1>
         )}
       </div>
-      <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={() => setIsDownloadWindowVisible(false)} isVisible={isDownloadWindowVisible} />
-      <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} activePin={activePin} onClose={() => setIsFileExplorerVisible(false)} isVisible={isFileExplorerVisible} />
-      <WebampPlayer onClose={() => setIsWebampVisible(false)} isVisible={isWebampVisible} />
+      <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={handleDownloadWindowClose} isVisible={isDownloadWindowVisible} />
+      <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} activePin={activePin} onClose={handleFileExplorerClose} isVisible={isFileExplorerVisible} />
+      <WebampPlayer onClose={handleWebampClose} isVisible={isWebampVisible} />
       <Taskbar />
     </div>
   );

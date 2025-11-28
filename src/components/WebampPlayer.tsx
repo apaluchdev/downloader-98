@@ -86,7 +86,7 @@ export function WebampPlayer({ isVisible = true, onClose }: WebampPlayerProps) {
       }
       initializedRef.current = false;
     };
-  }, [isVisible, onClose]);
+  }, [isVisible]);
 
   if (!isVisible) {
     return null;
