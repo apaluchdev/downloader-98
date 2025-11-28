@@ -18,11 +18,12 @@ interface DownloadWindowProps {
   onClose?: () => void;
   isVisible?: boolean;
   files?: FileItem[];
+  isMobile?: boolean;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActivePinChange, onClose, isVisible = true, files = [] }: DownloadWindowProps) {
+export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActivePinChange, onClose, isVisible = true, files = [], isMobile = false }: DownloadWindowProps) {
   const count = files.length;
   const [inputPin, setInputPin] = useState("");
   const [progress, setProgress] = useState(0);
@@ -189,7 +190,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
   };
 
   return (
-    <Window98 title="Downloader 98" onClose={onClose} initialX={50} initialY={200} width={480} className="download-window" isVisible={isVisible}>
+    <Window98 title="Downloader 98" onClose={onClose} initialX={isMobile ? 10 : 50} initialY={isMobile ? 80 : 200} width={isMobile ? 'calc(100vw - 20px)' : 480} className="download-window" isVisible={isVisible} isMobile={isMobile}>
       <div className="window-body">
         <div className="field-row-stacked">
           <label htmlFor="pin">PIN</label>

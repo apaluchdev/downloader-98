@@ -1,3 +1,24 @@
 .window98 {
   user-select: none;
 }
+
+/* Mobile window adjustments */
+.mobile-window {
+  position: relative !important;
+  margin: 10px auto !important;
+  left: auto !important;
+  top: auto !important;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .window98 {
+    max-width: calc(100vw - 20px);
+    margin: 10px auto;
+  }
+  
+  .window98 .window-body {
+    max-height: none;
+    overflow-y: auto;
+  }
+}

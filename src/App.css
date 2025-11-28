@@ -22,3 +22,49 @@
   bottom: 50px; /* Adjust to sit above the taskbar */
   right: 20px; /* Adjust to align with the bottom-right corner */
 }
+
+/* Mobile Layout Styles */
+.mobile-layout {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-layout .desktop {
+  min-height: auto;
+  overflow: visible;
+  padding-bottom: 20px;
+}
+
+.mobile-pin {
+  position: relative !important;
+  margin: 20px auto !important;
+  max-width: calc(100vw - 40px);
+}
+
+.mobile-window {
+  position: relative !important;
+  margin: 10px auto !important;
+  max-width: calc(100vw - 20px) !important;
+}
+
+.current-pin-display {
+  display: inline-block;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .desktop {
+    height: auto !important;
+    min-height: 100vh;
+    overflow: visible !important;
+  }
+  
+  .mobile-layout {
+    height: auto !important;
+  }
+  
+  .window98 {
+    box-sizing: border-box;
+  }
+}

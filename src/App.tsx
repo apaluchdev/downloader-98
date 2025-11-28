@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import "./App.css";
 import { Taskbar } from "./components/Taskbar";
 import { DownloadWindow } from "./components/DownloadWindow";
@@ -20,6 +20,19 @@ function App() {
   const [isFileExplorerVisible, setIsFileExplorerVisible] = useState(true);
   const [activePin, setActivePin] = useState<string>("");
   const [isWebampVisible, setIsWebampVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+      setIsMobile(mobile);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleFileAdd = (file: File, isSynced = false) => {
     const newFile: FileItem = {
@@ -98,21 +111,23 @@ function App() {
   }, []);
 
   return (
-    <div className="w-full" style={{ height: "100vh", overflow: "hidden" }}>
-      <div className="desktop" style={{ position: "relative", width: "100%", height: "100vh" }}>
-        <RecycleBinIcon name="Recycle Bin" imageSrc="/recycle_bin_full-2.png" onDoubleClick={() => alert("Recycle Bin opened!")} />
+    <div className={`w-full ${isMobile ? 'mobile-layout' : ''}`} style={{ height: "100vh", overflow: isMobile ? "auto" : "hidden" }}>
+      <div className="desktop" style={{ position: "relative", width: "100%", height: isMobile ? "auto" : "100vh", minHeight: isMobile ? "100vh" : "auto" }}>
+        {!isMobile && <RecycleBinIcon name="Recycle Bin" imageSrc="/recycle_bin_full-2.png" onDoubleClick={() => alert("Recycle Bin opened!")} />}
         {/* Bonzi GIF at top right */}
-        <img src="/bonzi.gif" alt="Bonzi GIF" style={{ position: "fixed", top: 8, right: 8, width: 100, height: "auto", zIndex: 0 }} />
+        {!isMobile && <img src="/bonzi.gif" alt="Bonzi GIF" style={{ position: "fixed", top: 8, right: 8, width: 100, height: "auto", zIndex: 0 }} />}
         {activePin && (
-          <h1 className="window text-center font-semibold w-xs m-auto display-block">
-            <p className="text-lg">Current PIN: {activePin}</p>
-          </h1>
+          <div className={`current-pin-display ${isMobile ? 'mobile-pin' : ''}`}>
+            <h1 className="window text-center font-semibold w-xs m-auto display-block">
+              <p className="text-lg">Current PIN: {activePin}</p>
+            </h1>
+          </div>
         )}
       </div>
-      <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={handleDownloadWindowClose} isVisible={isDownloadWindowVisible} />
-      <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} activePin={activePin} onClose={handleFileExplorerClose} isVisible={isFileExplorerVisible} />
-      <WebampPlayer onClose={handleWebampClose} isVisible={isWebampVisible} />
-      <Taskbar />
+      <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={handleDownloadWindowClose} isVisible={isDownloadWindowVisible} isMobile={isMobile} />
+      <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} activePin={activePin} onClose={handleFileExplorerClose} isVisible={isFileExplorerVisible} isMobile={isMobile} />
+      {!isMobile && <WebampPlayer onClose={handleWebampClose} isVisible={isWebampVisible} />}
+      {!isMobile && <Taskbar />}
     </div>
   );
 }

@@ -18,9 +18,10 @@ interface FileExplorerProps {
   onClose?: () => void;
   isVisible?: boolean;
   activePin?: string;
+  isMobile?: boolean;
 }
 
-export function FileExplorer({ onFileAdd, onFileDelete, onFileDownload, files, onClose, isVisible = true, activePin = "" }: FileExplorerProps) {
+export function FileExplorer({ onFileAdd, onFileDelete, onFileDownload, files, onClose, isVisible = true, activePin = "", isMobile = false }: FileExplorerProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const dropZoneRef = useRef<HTMLDivElement>(null);
@@ -178,7 +179,7 @@ export function FileExplorer({ onFileAdd, onFileDelete, onFileDownload, files, o
   };
 
   return (
-    <Window98 title="My Files" onClose={onClose} initialX={750} initialY={300} className="file-explorer-window" isVisible={isVisible}>
+    <Window98 title="My Files" onClose={onClose} initialX={isMobile ? 10 : 750} initialY={isMobile ? 450 : 300} width={isMobile ? 'calc(100vw - 20px)' : undefined} className="file-explorer-window" isVisible={isVisible} isMobile={isMobile}>
       <div className="window-body file-explorer-body" tabIndex={0} onKeyDown={handleKeyDown}>
         <div ref={dropZoneRef} className={`file-drop-zone ${isDragging ? "dragging" : ""}`} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
           {files.length === 0 ? (
