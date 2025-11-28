@@ -12,8 +12,11 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
     "98.css": "^0.1.21",
+    "butterchurn": "^3.0.0-beta.5",
+    "butterchurn-presets": "^3.0.0-beta.4",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "webamp": "^2.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

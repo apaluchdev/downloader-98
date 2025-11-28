@@ -188,7 +188,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
   };
 
   return (
-    <Window98 title="Downloader 98" onClose={onClose} initialX={100} initialY={50} width={480} className="download-window" isVisible={isVisible}>
+    <Window98 title="Downloader 98" onClose={onClose} initialX={50} initialY={200} width={480} className="download-window" isVisible={isVisible}>
       <div className="window-body">
         <div className="field-row-stacked">
           <label htmlFor="pin">PIN</label>
@@ -274,7 +274,15 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
               Enter a PIN to upload and download files. <br />
               Query the server for a specific PIN to see available files, upload local files, and download them. Files associated with a PIN are expired after a week.
             </p>
-            <p style={{ marginBottom: 16, fontSize: "1em", color: "#666" }}>Files are synced to the server and accessible from anywhere using your PIN.</p>
+            <hr style={{ margin: "16px 0" }} />
+            <p style={{ fontSize: "1em", color: "#666", marginBottom: 8 }}>
+              Winamp provided by{" "}
+              <a href="https://github.com/captbaritone/webamp" target="_blank" rel="noopener noreferrer">
+                Webamp
+              </a>{" "}
+              (MIT License)
+            </p>
+            <div style={{ fontSize: "1em", color: "#888", marginBottom: 8 }}>Copyright (c) 2017-2024 Jordan Eldredge</div>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button onClick={() => setShowAboutModal(false)}>OK</button>
             </div>

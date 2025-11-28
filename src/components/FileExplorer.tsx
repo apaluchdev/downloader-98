@@ -17,9 +17,10 @@ interface FileExplorerProps {
   files: FileItem[];
   onClose?: () => void;
   isVisible?: boolean;
+  activePin?: string;
 }
 
-export function FileExplorer({ onFileAdd, onFileDelete, onFileDownload, files, onClose, isVisible = true }: FileExplorerProps) {
+export function FileExplorer({ onFileAdd, onFileDelete, onFileDownload, files, onClose, isVisible = true, activePin = "" }: FileExplorerProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const dropZoneRef = useRef<HTMLDivElement>(null);
@@ -50,18 +51,72 @@ export function FileExplorer({ onFileAdd, onFileDelete, onFileDownload, files, o
     });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Delete" && selectedFileId && onFileDelete) {
+      const selectedFile = files.find((f) => f.id === selectedFileId);
+      if (!selectedFile) {
+        return;
+      }
+
+      // If file is synced, delete from server
+      if (selectedFile.isSynced && activePin) {
+        try {
+          const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+          const response = await fetch(`${API_BASE_URL}/api/files/${activePin}/${selectedFile.name}`, {
+            method: "DELETE",
+          });
+
+          if (!response.ok) {
+            throw new Error(`Delete failed: ${response.statusText}`);
+          }
+
+          console.log(`File "${selectedFile.name}" deleted from server`);
+        } catch (error) {
+          console.error("Delete error:", error);
+          alert(`Failed to delete file from server: ${error instanceof Error ? error.message : "Unknown error"}`);
+          return;
+        }
+      }
+
+      // Remove from local state
       onFileDelete(selectedFileId);
       setSelectedFileId(null);
     }
   };
 
-  const handleDeleteClick = () => {
-    if (selectedFileId && onFileDelete) {
-      onFileDelete(selectedFileId);
-      setSelectedFileId(null);
+  const handleDeleteClick = async () => {
+    if (!selectedFileId || !onFileDelete) {
+      return;
     }
+
+    const selectedFile = files.find((f) => f.id === selectedFileId);
+    if (!selectedFile) {
+      return;
+    }
+
+    // If file is synced, delete from server
+    if (selectedFile.isSynced && activePin) {
+      try {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${API_BASE_URL}/api/files/${activePin}/${selectedFile.name}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Delete failed: ${response.statusText}`);
+        }
+
+        console.log(`File "${selectedFile.name}" deleted from server`);
+      } catch (error) {
+        console.error("Delete error:", error);
+        alert(`Failed to delete file from server: ${error instanceof Error ? error.message : "Unknown error"}`);
+        return;
+      }
+    }
+
+    // Remove from local state
+    onFileDelete(selectedFileId);
+    setSelectedFileId(null);
   };
 
   const handleBrowseClick = () => {
@@ -123,7 +178,7 @@ export function FileExplorer({ onFileAdd, onFileDelete, onFileDownload, files, o
   };
 
   return (
-    <Window98 title="My Files" onClose={onClose} initialX={500} initialY={100} className="file-explorer-window" isVisible={isVisible}>
+    <Window98 title="My Files" onClose={onClose} initialX={750} initialY={300} className="file-explorer-window" isVisible={isVisible}>
       <div className="window-body file-explorer-body" tabIndex={0} onKeyDown={handleKeyDown}>
         <div ref={dropZoneRef} className={`file-drop-zone ${isDragging ? "dragging" : ""}`} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
           {files.length === 0 ? (

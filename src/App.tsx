@@ -4,7 +4,7 @@ import { Taskbar } from "./components/Taskbar";
 import { DownloadWindow } from "./components/DownloadWindow";
 import { FileExplorer } from "./components/FileExplorer";
 import { RecycleBinIcon } from "./components/RecycleBinIcon";
-// import { WinampPlayer } from "./components/WinampPlayer";
+import { WebampPlayer } from "./components/WebampPlayer";
 
 interface FileItem {
   name: string;
@@ -19,7 +19,7 @@ function App() {
   const [isDownloadWindowVisible, setIsDownloadWindowVisible] = useState(true);
   const [isFileExplorerVisible, setIsFileExplorerVisible] = useState(true);
   const [activePin, setActivePin] = useState<string>("");
-  // const [isWinampVisible, setIsWinampVisible] = useState(true);
+  const [isWebampVisible, setIsWebampVisible] = useState(true);
 
   const handleFileAdd = (file: File, isSynced = false) => {
     const newFile: FileItem = {
@@ -84,11 +84,11 @@ function App() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full" style={{ height: "100vh", overflow: "hidden" }}>
       <div className="desktop" style={{ position: "relative", width: "100%", height: "100vh" }}>
         <RecycleBinIcon name="Recycle Bin" imageSrc="/recycle_bin_full-2.png" onDoubleClick={() => alert("Recycle Bin opened!")} />
         {/* Bonzi GIF at top right */}
-        <img src="/bonzi.gif" alt="Bonzi GIF" style={{ position: "absolute", top: 12, right: 12, width: 100, height: "auto", zIndex: 100 }} />
+        <img src="/bonzi.gif" alt="Bonzi GIF" style={{ position: "fixed", top: 8, right: 8, width: 100, height: "auto", zIndex: 0 }} />
         {activePin && (
           <h1 className="window text-center font-semibold w-xs m-auto display-block">
             <p className="text-lg">Current PIN: {activePin}</p>
@@ -96,9 +96,8 @@ function App() {
         )}
       </div>
       <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={() => setIsDownloadWindowVisible(false)} isVisible={isDownloadWindowVisible} />
-      <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} onClose={() => setIsFileExplorerVisible(false)} isVisible={isFileExplorerVisible} />
-      {/* <WinampPlayer src="/music/chevrolet.mp3" onClose={() => setIsWinampVisible(false)} isVisible={isWinampVisible} /> */}
-      {/* <ProgressWindow windowTitle="Upload Progress" progress={50} onCancel={() => {}} onDone={() => {}} /> */}
+      <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} activePin={activePin} onClose={() => setIsFileExplorerVisible(false)} isVisible={isFileExplorerVisible} />
+      <WebampPlayer onClose={() => setIsWebampVisible(false)} isVisible={isWebampVisible} />
       <Taskbar />
     </div>
   );
