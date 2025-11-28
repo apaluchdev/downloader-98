@@ -125,7 +125,7 @@ function App() {
         )}
         <DownloadWindow files={files} onFileSync={handleFileSync} onSetFiles={handleSetFiles} activePin={activePin} onActivePinChange={handlePinChange} onClose={handleDownloadWindowClose} isVisible={isDownloadWindowVisible} isMobile={isMobile} />
         <FileExplorer files={files} onFileAdd={handleFileAdd} onFileDelete={handleFileDelete} onFileDownload={handleFileDownload} activePin={activePin} onClose={handleFileExplorerClose} isVisible={isFileExplorerVisible} isMobile={isMobile} />
-        {!isMobile && <WebampPlayer onClose={handleWebampClose} isVisible={isWebampVisible} />}
+        <WebampPlayer onClose={handleWebampClose} isVisible={isWebampVisible && !isMobile} />
       </div>
       {!isMobile && <Taskbar />}
     </div>
