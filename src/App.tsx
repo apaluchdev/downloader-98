@@ -44,9 +44,11 @@ function App() {
   };
 
   const handlePinChange = (newPin: string) => {
+    // Only clear files if the PIN is actually changing to a different value
+    if (newPin !== activePin) {
+      setFiles([]);
+    }
     setActivePin(newPin);
-    // Clear files when PIN is changed
-    setFiles([]);
   };
 
   const handleFileDownload = async (fileItem: FileItem) => {

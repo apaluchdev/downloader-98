@@ -126,17 +126,18 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
         size: fileObj.size,
       }));
 
+      // Set the active PIN first (before setting files)
+      // This ensures files aren't cleared by PIN change logic
+      if (onActivePinChange) {
+        onActivePinChange(inputPin);
+      }
+
       // Merge with existing local files that are not synced
       const localUnsyncedFiles = files.filter((f) => !f.isSynced);
       const allFiles = [...serverFiles, ...localUnsyncedFiles];
 
       if (onSetFiles) {
         onSetFiles(allFiles);
-      }
-
-      // Set the active PIN after successful query
-      if (onActivePinChange) {
-        onActivePinChange(inputPin);
       }
 
       setProgress(100);
