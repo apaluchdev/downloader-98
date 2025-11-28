@@ -30,6 +30,7 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("Pin must be 6 digits or longer!");
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadingFileName, setUploadingFileName] = useState("");
   const [showAboutModal, setShowAboutModal] = useState(false);
 
   // Pin must be 6-8 digits
@@ -58,41 +59,61 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
 
     setIsUploading(true);
     setProgress(0);
+    setUploadingFileName(file.name);
 
-    try {
+    return new Promise<boolean>((resolve) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch(`${API_BASE_URL}/api/files/${activePin}`, {
-        method: "POST",
-        body: formData,
+      const xhr = new XMLHttpRequest();
+
+      // Track upload progress
+      xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+          const percentComplete = (e.loaded / e.total) * 100;
+          setProgress(percentComplete);
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
-      }
+      xhr.addEventListener("load", () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          console.log("Upload successful:", xhr.responseText);
+          setProgress(100);
+          setModalMessage(`File "${file.name}" uploaded successfully!`);
+          setShowModal(true);
 
-      const result = await response.json();
-      console.log("Upload successful:", result);
+          // Reset progress after a short delay
+          setTimeout(() => {
+            setProgress(0);
+            setUploadingFileName("");
+          }, 1500);
 
-      setProgress(100);
-      setModalMessage(`File "${file.name}" uploaded successfully!`);
-      setShowModal(true);
+          setIsUploading(false);
+          resolve(true);
+        } else {
+          console.error("Upload error:", xhr.statusText);
+          setModalMessage(`Upload failed: ${xhr.statusText}`);
+          setShowModal(true);
+          setProgress(0);
+          setUploadingFileName("");
+          setIsUploading(false);
+          resolve(false);
+        }
+      });
 
-      // Reset progress after a short delay
-      setTimeout(() => {
+      xhr.addEventListener("error", () => {
+        console.error("Upload error: Network error");
+        setModalMessage("Upload failed: Network error");
+        setShowModal(true);
         setProgress(0);
-      }, 1500);
+        setUploadingFileName("");
+        setIsUploading(false);
+        resolve(false);
+      });
 
-      return true;
-    } catch (error) {
-      console.error("Upload error:", error);
-      setModalMessage(`Upload failed: ${error instanceof Error ? error.message : "Unknown error"}`);
-      setShowModal(true);
-      setProgress(0);
-    } finally {
-      setIsUploading(false);
-    }
+      xhr.open("POST", `${API_BASE_URL}/api/files/${activePin}`);
+      xhr.send(formData);
+    });
   };
 
   const handleQuery = async () => {
@@ -211,16 +232,23 @@ export function DownloadWindow({ onFileSync, onSetFiles, activePin = "", onActiv
         </div>
 
         <div className="status-bar" style={{ marginTop: 12 }}>
-          <p className="status-bar-field">{isUploading ? `Uploading: ${percentage}%` : `Speed: 0 KB/s`}</p>
+          <p className="status-bar-field">
+            {isUploading ? `Uploading "${uploadingFileName}": ${Math.round(percentage)}%` : `Speed: 0 KB/s`}
+          </p>
         </div>
 
         <div style={{ marginTop: 8 }}>
-          <ul className="tree-view bg-(--win-98)" style={{ border: "2px inset #c0c0c0", padding: "6px" }}>
-            <div className="flex h-4 gap-1">
+          <ul className="tree-view bg-(--win-98)" style={{ border: "2px inset #c0c0c0", padding: "6px", position: "relative" }}>
+            <div className="flex h-4 gap-1" style={{ opacity: isUploading && percentage < 5 ? 0.5 : 1, transition: "opacity 0.3s" }}>
               {loadingSquareCount.map((_, index) => (
                 <BlueSquare key={index} />
               ))}
             </div>
+            {isUploading && percentage < 5 && (
+              <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: "11px", color: "#000" }}>
+                Loading...
+              </div>
+            )}
           </ul>
         </div>
       </div>
